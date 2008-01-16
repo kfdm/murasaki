@@ -8,6 +8,7 @@
   <property name="dist" location="../../dist"/>
 
   <target name="dist" description="Generate the distribution">
+  	<ant dir="../../" target="dist" inheritAll="false"/>
     <!-- Create the build directory structure used by compile -->
     <mkdir dir="${build}"/>
     <javac source="1.5" target="1.5" srcdir="${src}" destdir="${build}" classpath="${dist}/tiled.jar"/>
