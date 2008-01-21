@@ -14,13 +14,15 @@ class CGameEngine
 public:
 
 	void Init(const char* title, int width=640, int height=480, 
-		      int bpp=0, bool fullscreen=false);
+		      int bpp=0, int fps=60, bool fullscreen=false);
 	void Cleanup();
 
 	void ChangeState(CGameState* state);
 	void PushState(CGameState* state);
 	void PopState();
 
+	void Run();
+	
 	void HandleEvents();
 	void Update();
 	void Draw();
@@ -36,6 +38,7 @@ private:
 
 	bool m_running;
 	bool m_fullscreen;
+	int m_fps;
 };
 
 #endif

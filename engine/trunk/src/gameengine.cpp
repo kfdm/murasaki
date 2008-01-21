@@ -4,9 +4,10 @@
 #include "SDL.h"
 #include "gameengine.h"
 #include "gamestate.h"
+#include "timer.h"
 
 void CGameEngine::Init(const char* title, int width, int height, 
-						 int bpp, bool fullscreen)
+						 int bpp, int fps, bool fullscreen)
 {
 	int flags = 0;
 
@@ -25,6 +26,7 @@ void CGameEngine::Init(const char* title, int width, int height,
 
 	m_fullscreen = fullscreen;
 	m_running = true;
+	m_fps = fps;
 
 	printf("CGameEngine Init\n");
 }
@@ -105,4 +107,20 @@ void CGameEngine::Draw()
 {
 	// let the state draw the screen
 	states.back()->Draw(this);
+}
+
+void CGameEngine::Run() {
+	Timer fps;
+	while(m_running) {
+		fps.start();
+		
+		this->HandleEvents();
+		this->Update();
+		this->Draw();
+		
+		//if( ( cap == true ) && ( fps.get_ticks() < 1000 / FRAMES_PER_SECOND ) )
+		if( fps.get_ticks() < 1000 / m_fps ) {
+			SDL_Delay( ( 1000 / m_fps ) - fps.get_ticks() );
+		}
+	}
 }
