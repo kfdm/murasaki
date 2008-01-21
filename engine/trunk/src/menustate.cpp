@@ -1,7 +1,6 @@
 
 #include <stdio.h>
-
-#include "SDL.h"
+#include <SDL.h>
 #include "gameengine.h"
 #include "gamestate.h"
 #include "menustate.h"

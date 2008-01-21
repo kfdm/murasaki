@@ -2,8 +2,7 @@
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
 
-#include "SDL.h"
-
+#include <SDL.h>
 #include <vector>
 using namespace std;
 

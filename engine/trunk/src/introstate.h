@@ -2,7 +2,7 @@
 #ifndef INTROSTATE_H
 #define INTROSTATE_H
 
-#include "SDL.h"
+#include <SDL.h>
 #include "gamestate.h"
 
 class CIntroState : public CGameState

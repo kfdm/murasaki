@@ -2,7 +2,7 @@
 #ifndef MENUSTATE_H
 #define MENUSTATE_H
 
-#include "SDL.h"
+#include <SDL.h>
 #include "gamestate.h"
 
 class CMenuState : public CGameState
