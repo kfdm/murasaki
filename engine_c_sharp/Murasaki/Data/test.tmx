@@ -3,7 +3,7 @@
  <tileset name="Sewer" firstgid="1" tilewidth="24" tileheight="24">
   <image source="sewer_tileset.png" trans="ff00ff"/>
  </tileset>
- <layer name="Base" width="20" height="20">
+ <layer name="Base" width="20" height="20" visible="0">
   <data>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -176,8 +176,8 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="25"/>
-   <tile gid="25"/>
+   <tile gid="37"/>
+   <tile gid="37"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -255,36 +255,16 @@
    <tile gid="25"/>
    <tile gid="25"/>
    <tile gid="25"/>
+   <tile gid="37"/>
+   <tile gid="37"/>
+   <tile gid="37"/>
+   <tile gid="37"/>
    <tile gid="25"/>
    <tile gid="25"/>
    <tile gid="25"/>
    <tile gid="25"/>
    <tile gid="25"/>
    <tile gid="25"/>
-   <tile gid="25"/>
-   <tile gid="25"/>
-   <tile gid="25"/>
-   <tile gid="25"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="25"/>
-   <tile gid="25"/>
-   <tile gid="25"/>
-   <tile gid="25"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -296,9 +276,9 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="25"/>
+   <tile gid="26"/>
    <tile gid="25"/>
-   <tile gid="25"/>
-   <tile gid="25"/>
+   <tile gid="26"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -319,6 +299,26 @@
    <tile gid="25"/>
    <tile gid="25"/>
    <tile gid="25"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="25"/>
+   <tile gid="26"/>
+   <tile gid="25"/>
+   <tile gid="26"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -421,8 +421,8 @@
    <tile gid="13"/>
    <tile gid="13"/>
    <tile gid="14"/>
-   <tile gid="17"/>
-   <tile gid="18"/>
+   <tile gid="39"/>
+   <tile gid="39"/>
    <tile gid="19"/>
    <tile gid="17"/>
    <tile gid="18"/>
@@ -813,7 +813,7 @@
   </data>
   <tileproperties/>
  </layer>
- <layer name="Detail" width="20" height="20">
+ <layer name="Detail" width="20" height="20" visible="0">
   <data>
    <tile gid="13"/>
    <tile gid="13"/>

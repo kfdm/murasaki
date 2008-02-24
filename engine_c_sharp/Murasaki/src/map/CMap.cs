@@ -47,9 +47,9 @@ namespace Murasaki {
                             m_TileSize = Convert.ToInt16(reader.GetAttribute("tilewidth"));
                             m_MapWidth = Convert.ToInt16(reader.GetAttribute("width"));
                             m_MapHeight = Convert.ToInt16(reader.GetAttribute("height"));
-                            m_MapBase = new int[m_MapWidth, m_MapHeight];
-                            m_MapColide = new int[m_MapWidth, m_MapHeight];
-                            m_MapDetail = new int[m_MapWidth, m_MapHeight];
+                            m_MapBase = new int[m_MapHeight, m_MapWidth];
+                            m_MapColide = new int[m_MapHeight, m_MapWidth];
+                            m_MapDetail = new int[m_MapHeight, m_MapWidth];
                             break;
                         case "tileset":
                             Console.WriteLine("Found Tileset");
@@ -83,7 +83,7 @@ namespace Murasaki {
         private void LoadMapLayer(XmlReader xml, int width, int height, int[,] map) {
             Console.WriteLine("{0} {1}", width, height);
             xml.Read();  //Read in Data Tag
-            xml.Read();
+            xml.MoveToContent();
             for (int y = 0; y < m_MapHeight; y++) {
                 for (int x = 0; x < m_MapWidth; x++) {
                     xml.Read();
@@ -95,51 +95,33 @@ namespace Murasaki {
                 Console.WriteLine();
             }
             xml.Read();  //Read in Data Tag
+            xml.MoveToContent();
         }
         public void Update() {
 
         }
-        public void Draw(Surface dest) {
+        public void DrawLayer(int[,] layer) {
             Rectangle destRect;
             Rectangle srcRect;
-            
-            //Draw Map Base
             for (int y = 0; y < m_MapHeight; y++) {
                 for (int x = 0; x < m_MapWidth; x++) {
-                    if (m_MapBase[y, x] != 0) {
-                        srcRect = m_TileSet.GetTile(m_MapBase[y, x]);
+                    if (layer[y, x] != 0) {
+                        srcRect = m_TileSet.GetTile(layer[y, x]);
                         destRect = new Rectangle(x * m_TileSize, y * m_TileSize, m_TileSize, m_TileSize);
                         m_surface.Blit(m_TileSet.m_tilemap.Surface, destRect, srcRect);
                     }
                 }
             }
-
-            //Draw Map Colide
-            for (int y = 0; y < m_MapHeight; y++) {
-                for (int x = 0; x < m_MapWidth; x++) {
-                    if (m_MapColide[y, x] != 0) {
-                        srcRect = m_TileSet.GetTile(m_MapColide[y, x]);
-                        destRect = new Rectangle(x * m_TileSize, y * m_TileSize, m_TileSize, m_TileSize);
-                        m_surface.Blit(m_TileSet.m_tilemap.Surface, destRect, srcRect);
-                    }
-                }
-            }
-
-            //Draw Avatar
-            destRect = new Rectangle(m_PlayerX, m_PlayerY, m_TileSize, m_TileSize);
+        }
+        public void DrawAvatar() {
+            Rectangle destRect = new Rectangle(m_PlayerX, m_PlayerY, m_TileSize, m_TileSize);
             m_surface.Blit(m_avatar.Surface, destRect);
-
-            //Draw Map Detail
-            for (int y = 0; y < m_MapHeight; y++) {
-                for (int x = 0; x < m_MapWidth; x++) {
-                    if (m_MapDetail[y, x] != 0) {
-                        srcRect = m_TileSet.GetTile(m_MapDetail[y, x]);
-                        destRect = new Rectangle(x * m_TileSize, y * m_TileSize, m_TileSize, m_TileSize);
-                        m_surface.Blit(m_TileSet.m_tilemap.Surface, destRect, srcRect);
-                    }
-                }
-            }
-
+        }
+        public void Draw(Surface dest) {
+            DrawLayer(m_MapBase);
+            DrawLayer(m_MapColide);
+            DrawAvatar();
+            DrawLayer(m_MapDetail);
             dest.Blit(m_surface);
         }
         public void movePlayer(int x, int  y) {
