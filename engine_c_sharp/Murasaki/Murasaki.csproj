@@ -12,6 +12,12 @@
     <AssemblyName>Murasaki</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <StartupObject>Murasaki.Program</StartupObject>
+    <ManifestCertificateThumbprint>FE1A7B239EDF405D02F23DA6487810ADA49FF273</ManifestCertificateThumbprint>
+    <ManifestKeyFile>Murasaki_TemporaryKey.pfx</ManifestKeyFile>
+    <GenerateManifests>true</GenerateManifests>
+    <SignManifests>true</SignManifests>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -22,12 +28,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationRevision>1</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <StartupObject>Murasaki.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,8 +51,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Xna.Framework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=x86" />
-    <Reference Include="Microsoft.Xna.Framework.Game, Version=2.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL" />
     <Reference Include="SdlDotNet, Version=6.0.0.0, Culture=neutral, PublicKeyToken=26ad4f7e10c61408, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -56,7 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="samsrc\GameEngine.cs" />
+    <None Include="samsrc\GameEngine.cs" />
     <Compile Include="src\map\CMap.cs" />
     <Compile Include="src\states\CPlayState.cs" />
     <Compile Include="src\states\CIntroState.cs" />
@@ -64,15 +66,21 @@
     <Compile Include="src\states\CGameState.cs" />
     <Compile Include="src\map\CTileSet.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="refsrc\Other.cs" />
+    <None Include="refsrc\Other.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="refsrc\TileEngine.cs" />
-    <Compile Include="samsrc\GameState.cs" />
-    <Compile Include="samsrc\MurasakiEngine.cs" />
-    <Compile Include="samsrc\Program.cs" />
+    <None Include="refsrc\TileEngine.cs" />
+    <None Include="samsrc\GameState.cs" />
+    <None Include="samsrc\MurasakiEngine.cs" />
+    <None Include="samsrc\Program.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Data\avatar.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\intro.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\sewer_tileset.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\tiles.bmp">
@@ -102,9 +110,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data\Start.map">
+    <None Include="Data\test.tmx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Murasaki_TemporaryKey.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -8,18 +8,19 @@ using System.Drawing;
 
 namespace Murasaki {
     class CTileSet {
-        private const int TILE_SIZE = 48;
-        private int m_numx, m_numy;
-        public Sprite tilemap;
-        public CTileSet(string filename) {
-            tilemap = new Sprite(filename);
-            m_numx = tilemap.Width / TILE_SIZE;
-            m_numy = tilemap.Height / TILE_SIZE;
+        private int m_numx, m_numy,m_tilesize;
+        public Sprite m_tilemap;
+        public CTileSet(string filename) : this(filename, 24) { }
+        public CTileSet(string filename,int tilesize) {
+            m_tilemap   = new Sprite(filename);
+            m_tilesize  = tilesize;
+            m_numx      = m_tilemap.Width / m_tilesize;
+            m_numy      = m_tilemap.Height / m_tilesize;
         }
         public Rectangle GetTile(int tile) {
-            int tilex = (tile % m_numx)*TILE_SIZE;
-            int tiley = (tile / m_numy)*TILE_SIZE;
-            return new Rectangle(tilex, tiley, TILE_SIZE, TILE_SIZE);
+            int tilex = ((tile % m_numx)-1) * m_tilesize;
+            int tiley = ((tile / m_numx)) * m_tilesize;
+            return new Rectangle(tilex, tiley, m_tilesize, m_tilesize);
         }
     }
 }
