@@ -137,30 +137,27 @@ namespace Murasaki {
             left = m_avatar.Left / m_TileSize;
             right = m_avatar.Right / m_TileSize;
 
-            if (m_avatar.moveup) {
-                if (m_MapColide[left, top] != 0 || m_MapColide[right, top] != 0) {
+            if (m_avatar.moveup || m_avatar.movedown || m_avatar.moveleft || m_avatar.moveright) {
+                //Top
+                if (m_MapColide[left, top] != 0 && m_MapColide[right, top] != 0) {
                     m_avatar.Top = (top + 1) * m_TileSize;
                     top = m_avatar.Top / m_TileSize;
                     bottom = m_avatar.Bottom / m_TileSize;
                 }
-            }
-            if (m_avatar.movedown) {
-                 if (m_MapColide[left, bottom] != 0 || m_MapColide[right, bottom] != 0) {
+                //Bottom
+                if (m_MapColide[left, bottom] != 0 && m_MapColide[right, bottom] != 0) {
                     m_avatar.Bottom = (bottom * m_TileSize) - 1;
                     top = m_avatar.Top / m_TileSize;
                     bottom = m_avatar.Bottom / m_TileSize;
                 }
-            }
-
-            if (m_avatar.moveleft) {
-                if (m_MapColide[left, top] != 0 || m_MapColide[left, bottom] != 0) {
+                //Left
+                if (m_MapColide[left, top] != 0 && m_MapColide[left, bottom] != 0) {
                     m_avatar.Left = (left + 1) * m_TileSize;
                     left = m_avatar.Left / m_TileSize;
                     right = m_avatar.Right / m_TileSize;
                 }
-            }
-            if (m_avatar.moveright) {
-                if (m_MapColide[right, top] != 0 || m_MapColide[right, bottom] != 0) {
+                //Right
+                if (m_MapColide[right, top] != 0 && m_MapColide[right, bottom] != 0) {
                     m_avatar.Right = (right * m_TileSize) - 1;
                     left = m_avatar.Left / m_TileSize;
                     right = m_avatar.Right / m_TileSize;
