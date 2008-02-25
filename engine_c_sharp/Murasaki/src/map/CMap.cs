@@ -22,13 +22,14 @@ namespace Murasaki {
         private Surface m_surface;
         private CActorPlayer m_avatar;
 
-        public CTileMap(string filename) : this(filename, 10, 10) { }
-        public CTileMap(string filename, int playerx, int playery) {
+        public CTileMap(string filename,int playerx, int playery) : this(filename) {
+            movePlayer(playerx, playery);
+        }
+        public CTileMap(string filename) {
             m_surface = new Surface(20 * 24, 20 * 24);
 
             LoadAvatar("Data/avatar.png");
             LoadMap("Data/test.tmx");
-            movePlayer(playerx, playery);
 
             m_camera_width = 20;
             m_camera_halfwidth = m_camera_width / 2;
@@ -52,6 +53,10 @@ namespace Murasaki {
                             m_MapBase = new int[m_MapHeight, m_MapWidth];
                             m_MapColide = new int[m_MapHeight, m_MapWidth];
                             m_MapDetail = new int[m_MapHeight, m_MapWidth];
+                            break;
+                        case "properties":
+                            Console.WriteLine("Found Properties");
+                            LoadMapProperties(reader);
                             break;
                         case "tileset":
                             Console.WriteLine("Found Tileset");
@@ -79,6 +84,26 @@ namespace Murasaki {
                     }
                 }
             }
+        }
+        private void LoadMapProperties(XmlReader xml) {
+            int startx = 15, starty = 15;
+            while (xml.Read()) {
+                xml.MoveToContent();
+                //Exit if we find the </properties> tag
+                if (xml.Name == "properties") {
+                    movePlayer(startx, starty);
+                    return;
+                }
+                switch (xml.GetAttribute("name")) {
+                    case "startx":
+                        startx = Convert.ToInt32(xml.GetAttribute("value"));
+                        break;
+                    case "starty":
+                        starty = Convert.ToInt32(xml.GetAttribute("value"));
+                        break;
+                }
+            }
+            
         }
         private void LoadMapTileset(XmlReader xml) {
             m_TileSet = new CTileSet("Data/sewer_tileset.png");
