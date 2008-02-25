@@ -19,7 +19,7 @@ namespace Murasaki  {
         /// </summary>
         /// <param name="title">Title Bar Text</param>
         public void Init(string title) {
-            this.Init(title,800,600,0,100,false);
+            this.Init(title,800,600,0,60,false);
         }
         /// <summary>
         /// Initilize the Engine

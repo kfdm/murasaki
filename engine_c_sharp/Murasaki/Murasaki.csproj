@@ -59,6 +59,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="samsrc\GameEngine.cs" />
+    <Compile Include="CActor.cs" />
+    <Compile Include="CActorPlayer.cs" />
     <Compile Include="src\map\CMap.cs" />
     <Compile Include="src\states\CPlayState.cs" />
     <Compile Include="src\states\CIntroState.cs" />

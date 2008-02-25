@@ -2,6 +2,7 @@
 using SdlDotNet.Core;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
+using System.Drawing;
 
 namespace Murasaki {
     class CPlayState : CGameState {
@@ -43,7 +44,11 @@ namespace Murasaki {
             m_CurrentMap = new CTileMap(START_MAP);
         }
         public override void Draw(CGameEngine game) {
-            m_CurrentMap.Draw(Video.Screen);
+            Video.Screen.Fill(Color.White);
+            m_CurrentMap.Draw(Video.Screen,new Rectangle(0,0,20*24,20*24));
+        }
+        public override void Update(CGameEngine game) {
+            m_CurrentMap.Update();
         }
     }
 }
