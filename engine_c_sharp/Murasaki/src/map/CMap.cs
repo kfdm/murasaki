@@ -35,6 +35,9 @@ namespace Murasaki {
             m_camera_halfwidth = m_camera_width / 2;
             m_camera = new Rectangle(0, 0, m_camera_width * m_TileSize, m_camera_width * m_TileSize);
         }
+        ~CTileMap() {
+            m_surface.Dispose();
+        }
         private void LoadAvatar(string filename) {
             m_avatar = new CActorPlayer(filename);
         }
@@ -206,6 +209,7 @@ namespace Murasaki {
 
             Console.WriteLine("{0},{1} {2},{3}", m_camera.X, m_camera.Y, Math.Abs( m_camera.X - m_camera.Width), Math.Abs(m_camera.Y - m_camera.Height));
 
+            m_surface.Fill(Color.Black);
             DrawLayer(m_MapBase, camx, camy);
             DrawLayer(m_MapColide, camx, camy);
             DrawActors();

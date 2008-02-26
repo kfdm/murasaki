@@ -20,6 +20,9 @@ namespace Murasaki {
             m_numx      = m_tilemap.Width / m_tilesize;
             m_numy      = m_tilemap.Height / m_tilesize;
         }
+        ~CTileSet() {
+            m_tilemap.Dispose();
+        }
         public Rectangle GetTile(int tile) {
             int tilex = ((tile % m_numx)-1) * m_tilesize;
             int tiley = ((tile / m_numx)) * m_tilesize;

@@ -33,7 +33,6 @@ namespace Murasaki {
         public int Width {
             get { return m_rect.Width; }
         }
-
         public abstract void Draw(Surface dest, Rectangle destRect);
         public abstract void Update();
     }
