@@ -9,6 +9,17 @@ using SdlDotNet.Input;
 
 namespace Murasaki {
     abstract class CActor {
+        public virtual bool moveup { get { return m_moveup; } set { m_moveup = value; } }
+        public virtual bool movedown { get { return m_movedown; } set { m_movedown = value; } }
+        public virtual bool moveleft { get { return m_moveleft; } set { m_moveleft = value; } }
+        public virtual bool moveright { get { return m_moveright; } set { m_moveright = value; } }
+        public virtual int movespeed { get { return m_movespeed; } set { m_movespeed = value; } }
+
+        protected bool m_moveup, m_movedown, m_moveright, m_moveleft;
+        protected int m_movespeed;
+        protected Key m_direction = Key.UpArrow;
+        protected int m_walkanim = 0, m_walkanim2 = 0;
+
         protected Surface m_tileset;
         protected Rectangle m_rect;
         public int Top {
@@ -33,7 +44,8 @@ namespace Murasaki {
         public int Width {
             get { return m_rect.Width; }
         }
-        public abstract void Draw(Surface dest, Rectangle destRect);
+        public abstract void Draw(Surface dest, Rectangle World, Rectangle Camera);
+        public virtual void CollideWall() { }
         public abstract void Update();
     }
 }

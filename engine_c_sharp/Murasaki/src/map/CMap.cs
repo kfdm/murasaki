@@ -22,6 +22,8 @@ namespace Murasaki {
         private Surface m_surface;
         private CActorPlayer m_avatar;
 
+        private LinkedList<CActor> m_actors;
+
         public CTileMap(string filename,int playerx, int playery) : this(filename) {
             movePlayer(playerx, playery);
         }
@@ -30,6 +32,9 @@ namespace Murasaki {
 
             LoadAvatar("Data/avatar.png");
             LoadMap("Data/test.tmx");
+
+            m_actors=new LinkedList<CActor>();
+            m_actors.AddLast( new CActorCivilian("data/pink.png",26,13,m_TileSize));
 
             m_camera_width = 20;
             m_camera_halfwidth = m_camera_width / 2;
@@ -131,39 +136,48 @@ namespace Murasaki {
         public void Update() {
             m_avatar.Update();
 
-            UpdatePlayerColide();
-        }
-        private void UpdatePlayerColide() {
-            int top, bottom, left, right;
-            top = m_avatar.Top / m_TileSize;
-            bottom = m_avatar.Bottom / m_TileSize;
-            left = m_avatar.Left / m_TileSize;
-            right = m_avatar.Right / m_TileSize;
+            foreach (CActor actor in m_actors) {
+                actor.Update();
+                UpdateActorColide(actor);
+            }
 
-            if (m_avatar.moveup || m_avatar.movedown || m_avatar.moveleft || m_avatar.moveright) {
+            UpdateActorColide(m_avatar);
+        }
+        private void UpdateActorColide(CActor actor) {
+            int top, bottom, left, right;
+            top = actor.Top / m_TileSize;
+            bottom = actor.Bottom / m_TileSize;
+            left = actor.Left / m_TileSize;
+            right = actor.Right / m_TileSize;
+
+            if (actor.moveup || actor.movedown || actor.moveleft || actor.moveright) {
                 //Top
                 if (m_MapColide[left, top] != 0 && m_MapColide[right, top] != 0) {
-                    m_avatar.Top = (top + 1) * m_TileSize;
-                    top = m_avatar.Top / m_TileSize;
-                    bottom = m_avatar.Bottom / m_TileSize;
+                    actor.Top = (top + 1) * m_TileSize;
+                    top = actor.Top / m_TileSize;
+                    bottom = actor.Bottom / m_TileSize;
+                    actor.CollideWall();
                 }
                 //Bottom
                 if (m_MapColide[left, bottom] != 0 && m_MapColide[right, bottom] != 0) {
-                    m_avatar.Bottom = (bottom * m_TileSize) - 1;
-                    top = m_avatar.Top / m_TileSize;
-                    bottom = m_avatar.Bottom / m_TileSize;
+                    actor.Bottom = (bottom * m_TileSize) - 1;
+                    top = actor.Top / m_TileSize;
+                    bottom = actor.Bottom / m_TileSize;
+                    actor.CollideWall();
                 }
                 //Left
                 if (m_MapColide[left, top] != 0 && m_MapColide[left, bottom] != 0) {
-                    m_avatar.Left = (left + 1) * m_TileSize;
-                    left = m_avatar.Left / m_TileSize;
-                    right = m_avatar.Right / m_TileSize;
+                    actor.Left = (left + 1) * m_TileSize;
+                    left = actor.Left / m_TileSize;
+                    right = actor.Right / m_TileSize;
+                    actor.CollideWall();
                 }
                 //Right
                 if (m_MapColide[right, top] != 0 && m_MapColide[right, bottom] != 0) {
-                    m_avatar.Right = (right * m_TileSize) - 1;
-                    left = m_avatar.Left / m_TileSize;
-                    right = m_avatar.Right / m_TileSize;
+                    actor.Right = (right * m_TileSize) - 1;
+                    left = actor.Left / m_TileSize;
+                    right = actor.Right / m_TileSize;
+                    actor.CollideWall();
                 }
             }            
         }
@@ -183,13 +197,17 @@ namespace Murasaki {
             m_surface.Blit(tmp, m_surface.Rectangle, m_camera);
             tmp.Dispose();
         }
-        public void DrawActors() {
-            Rectangle destRect = new Rectangle();
-            destRect.Height = m_avatar.Height;
-            destRect.Width = m_avatar.Width;
-            destRect.X = (m_camera_halfwidth * m_TileSize) - m_avatar.Width / 2;
-            destRect.Y = (m_camera_halfwidth * m_TileSize) - m_avatar.Height / 2;
-            m_avatar.Draw(m_surface, destRect);
+        public void DrawActors(int CamLeft, int CamTop) {
+            Rectangle m_world = new Rectangle(CamLeft * m_TileSize, CamTop * m_TileSize, m_camera_width * m_TileSize, m_camera_width * m_TileSize);
+            m_avatar.Draw(m_surface, m_world, m_camera);
+            foreach (CActor actor in m_actors) {
+                int left = actor.Left / m_TileSize;
+                int top = actor.Top / m_TileSize;
+                if (left >= CamLeft && left < CamLeft + m_camera_width &&
+                    top >= CamTop && top < CamTop + m_camera_width) {
+                    actor.Draw(m_surface,m_world, m_camera);
+                }
+            }
         }
         public void Draw(Surface dest,Rectangle size) {
             int camx, camy,playx, playy;
@@ -207,12 +225,10 @@ namespace Murasaki {
             m_camera.X = (m_avatar.Left + (m_avatar.Width / 2) - (m_camera_halfwidth * m_TileSize)) - (camx * m_TileSize);
             m_camera.Y = (m_avatar.Top + (m_avatar.Height / 2) - (m_camera_halfwidth * m_TileSize)) - (camy * m_TileSize);
 
-            Console.WriteLine("{0},{1} {2},{3}", m_camera.X, m_camera.Y, Math.Abs( m_camera.X - m_camera.Width), Math.Abs(m_camera.Y - m_camera.Height));
-
             m_surface.Fill(Color.Black);
             DrawLayer(m_MapBase, camx, camy);
             DrawLayer(m_MapColide, camx, camy);
-            DrawActors();
+            DrawActors(camx,camy);
             DrawLayer(m_MapDetail, camx, camy);
             dest.Blit(m_surface, size);
         }

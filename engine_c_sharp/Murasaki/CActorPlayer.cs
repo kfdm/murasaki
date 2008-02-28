@@ -9,17 +9,11 @@ using SdlDotNet.Input;
 
 namespace Murasaki {
     class CActorPlayer : CActor {
-        public bool moveup { get { return m_moveup; } set { m_moveup = value; setDirection(); } }
-        public bool movedown { get { return m_movedown; } set { m_movedown = value; setDirection(); } }
-        public bool moveleft { get { return m_moveleft; } set { m_moveleft = value; setDirection(); } }
-        public bool moveright { get { return m_moveright; } set { m_moveright = value; setDirection(); } }
-        public int movespeed { get { return m_movespeed; } set { m_movespeed = value; } }
+        public override bool moveup { get { return m_moveup; } set { m_moveup = value; setDirection(); } }
+        public override bool movedown { get { return m_movedown; } set { m_movedown = value; setDirection(); } }
+        public override bool moveleft { get { return m_moveleft; } set { m_moveleft = value; setDirection(); } }
+        public override bool moveright { get { return m_moveright; } set { m_moveright = value; setDirection(); } }
 
-        private Key m_direction = Key.UpArrow;
-        private int m_walkanim = 0, m_walkanim2 = 0;
-
-        private bool m_moveup,m_movedown,m_moveright,m_moveleft;
-        private int m_movespeed;
         public CActorPlayer(string filename) {
             m_tileset = new Surface(filename);
             m_rect = new Rectangle(0, 0, m_tileset.Width / 3, m_tileset.Height / 4);
@@ -45,7 +39,14 @@ namespace Murasaki {
             if (moveright)
                 m_direction = Key.RightArrow;
         }
-        public override void Draw(Surface dest, Rectangle destRect) {
+        public override void Draw(Surface dest, Rectangle world, Rectangle camera) {
+            Console.WriteLine(world.ToString() + " " + camera.ToString());
+            //Center over camera
+            camera.X = (camera.Width / 2) - m_rect.Width / 2;
+            camera.Y = (camera.Height / 2) - m_rect.Height / 2;
+            camera.Height = m_rect.Height;
+            camera.Width = m_rect.Width;
+
             Rectangle srcRect = new Rectangle(0, 0, m_rect.Width, m_rect.Height);
             switch (m_direction) {
                 case Key.UpArrow:
@@ -63,7 +64,7 @@ namespace Murasaki {
             }
             srcRect.X = m_rect.Width * m_walkanim;
 
-            dest.Blit(m_tileset, destRect,srcRect);
+            dest.Blit(m_tileset, camera,srcRect);
         }
         public override void Update() {
             if (moveup)
