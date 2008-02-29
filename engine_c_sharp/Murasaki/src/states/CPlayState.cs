@@ -77,7 +77,7 @@ namespace Murasaki {
         }
         public override void Draw(CGameEngine game) {
             Video.Screen.Fill(Color.White);
-            m_CurrentMap.Draw(Video.Screen,new Rectangle(0,0,20*24,20*24));
+            m_CurrentMap.Draw(Video.Screen,Video.Screen.Rectangle);
         }
         public override void Update(CGameEngine game) {
             m_CurrentMap.Update();

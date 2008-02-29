@@ -14,13 +14,16 @@ namespace Murasaki {
         public CActorPlayer Avatar { get { return m_avatar; } }
         public LinkedList<CActor> Actors { get { return m_actors; } }
 
-        private int m_MapHeight, m_MapWidth;
         private CTileSet m_TileSet;
+        private int m_MapHeight, m_MapWidth;
         private int m_TileSize;
         private int[,] m_MapBase,m_MapDetail,m_MapColide;
 
         private Rectangle m_camera;
-        private int m_camera_width,m_camera_halfwidth;
+        private const int m_camera_width = 25;
+        private const int m_camera_height = 20;
+        private const int m_camera_halfwidth = m_camera_width / 2;
+        private const int m_camera_halfheight = m_camera_height / 2;
 
         private Surface m_surface;
 
@@ -31,7 +34,7 @@ namespace Murasaki {
             movePlayer(playerx, playery);
         }
         public CTileMap(string filename) {
-            m_surface = new Surface(20 * 24, 20 * 24);
+            
 
             LoadAvatar("Data/avatar.png");
             LoadMap("Data/test.tmx");
@@ -39,9 +42,9 @@ namespace Murasaki {
             m_actors=new LinkedList<CActor>();
             m_actors.AddLast( new CActorCivilian("data/pink.png",26,13,m_TileSize));
 
-            m_camera_width = 20;
-            m_camera_halfwidth = m_camera_width / 2;
-            m_camera = new Rectangle(0, 0, m_camera_width * m_TileSize, m_camera_width * m_TileSize);
+            m_surface = new Surface(m_camera_width * m_TileSize, m_camera_height * m_TileSize);
+            m_camera = new Rectangle(0, 0, m_camera_width * m_TileSize, m_camera_height * m_TileSize);
+            Video.SetVideoMode(m_camera_width * m_TileSize, m_camera_height * m_TileSize);
         }
         ~CTileMap() {
             m_surface.Dispose();
@@ -210,7 +213,7 @@ namespace Murasaki {
             tmp.Dispose();
         }
         private void DrawActors(int CamLeft, int CamTop) {
-            Rectangle m_world = new Rectangle(CamLeft * m_TileSize, CamTop * m_TileSize, m_camera_width * m_TileSize, m_camera_width * m_TileSize);
+            Rectangle m_world = new Rectangle(CamLeft * m_TileSize, CamTop * m_TileSize, m_camera_width * m_TileSize, m_camera_height * m_TileSize);
             m_avatar.Draw(m_surface, m_world, m_camera);
             foreach (CActor actor in m_actors) {
                 int left = actor.Left / m_TileSize;
@@ -235,7 +238,7 @@ namespace Murasaki {
                 camy = 0;
 
             m_camera.X = (m_avatar.Left + (m_avatar.Width / 2) - (m_camera_halfwidth * m_TileSize)) - (camx * m_TileSize);
-            m_camera.Y = (m_avatar.Top + (m_avatar.Height / 2) - (m_camera_halfwidth * m_TileSize)) - (camy * m_TileSize);
+            m_camera.Y = (m_avatar.Top + (m_avatar.Height / 2) - (m_camera_halfheight * m_TileSize)) - (camy * m_TileSize);
 
             m_surface.Fill(Color.Black);
             DrawLayer(m_MapBase, camx, camy);
