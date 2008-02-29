@@ -39,49 +39,5 @@ namespace Murasaki {
             if (moveright)
                 m_direction = Key.RightArrow;
         }
-        public override void Draw(Surface dest, Rectangle world, Rectangle camera) {
-            Console.WriteLine(world.ToString() + " " + camera.ToString());
-            //Center over camera
-            camera.X = (camera.Width / 2) - m_rect.Width / 2;
-            camera.Y = (camera.Height / 2) - m_rect.Height / 2;
-            camera.Height = m_rect.Height;
-            camera.Width = m_rect.Width;
-
-            Rectangle srcRect = new Rectangle(0, 0, m_rect.Width, m_rect.Height);
-            switch (m_direction) {
-                case Key.UpArrow:
-                    srcRect.Y = 0;
-                    break;
-                case Key.DownArrow:
-                    srcRect.Y = m_rect.Height * 2;
-                    break;
-                case Key.LeftArrow:
-                    srcRect.Y = m_rect.Height * 3;
-                    break;
-                case Key.RightArrow:
-                    srcRect.Y = m_rect.Height;
-                    break;
-            }
-            srcRect.X = m_rect.Width * m_walkanim;
-
-            dest.Blit(m_tileset, camera,srcRect);
-        }
-        public override void Update() {
-            if (moveup)
-                Top -= movespeed;
-            if (movedown)
-                Top += movespeed;
-            if (moveleft)
-                Left -= movespeed;
-            if (moveright)
-                Left += movespeed;
-            if (moveup || movedown || moveleft || moveright) {
-                if (m_walkanim2 > 10) {
-                    m_walkanim2 = 0;
-                    m_walkanim = (m_walkanim + 1) % 3;
-                }
-                m_walkanim2++;
-            }
-        }
     }
 }

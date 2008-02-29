@@ -45,8 +45,48 @@ namespace Murasaki {
         public int Width {
             get { return m_rect.Width; }
         }
-        public abstract void Draw(Surface dest, Rectangle World, Rectangle Camera);
+        public virtual void Draw(Surface dest, Rectangle World, Rectangle Camera) {
+            Rectangle srcRect = new Rectangle(0, m_rect.Height * 2, m_rect.Width, m_rect.Height);
+            switch (m_direction) {
+                case Key.UpArrow:
+                    srcRect.Y = 0;
+                    break;
+                case Key.DownArrow:
+                    srcRect.Y = m_rect.Height * 2;
+                    break;
+                case Key.LeftArrow:
+                    srcRect.Y = m_rect.Height * 3;
+                    break;
+                case Key.RightArrow:
+                    srcRect.Y = m_rect.Height;
+                    break;
+            }
+            srcRect.X = m_rect.Width * m_walkanim;
+
+            Camera.X = m_rect.X - World.X - Camera.X;
+            Camera.Y = m_rect.Y - World.Y - Camera.Y;
+            Camera.Width = m_rect.Width;
+            Camera.Height = m_rect.Height;
+
+            dest.Blit(m_tileset, Camera, srcRect);
+        }
         public virtual void CollideWall() { }
-        public abstract void Update();
+        public virtual void Update() {
+            if (moveup)
+                Top -= movespeed;
+            if (movedown)
+                Top += movespeed;
+            if (moveleft)
+                Left -= movespeed;
+            if (moveright)
+                Left += movespeed;
+            if (moveup || movedown || moveleft || moveright) {
+                if (m_walkanim2 > 10) {
+                    m_walkanim2 = 0;
+                    m_walkanim = (m_walkanim + 1) % 3;
+                }
+                m_walkanim2++;
+            }
+        }
     }
 }

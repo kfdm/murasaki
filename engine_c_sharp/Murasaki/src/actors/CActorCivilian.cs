@@ -48,7 +48,6 @@ namespace Murasaki {
             ticks++;
             if (ticks % 60 == 0)
                 RandomDirection();
-
             if (m_direction==Key.UpArrow)
                 Top -= movespeed;
             if (m_direction==Key.DownArrow)
@@ -70,31 +69,6 @@ namespace Murasaki {
         }
         public override void CollideWall() {
             RandomDirection();
-        }
-        public override void Draw(Surface dest, Rectangle world, Rectangle Camera) {
-            Rectangle srcRect = new Rectangle(0, m_rect.Height * 2, m_rect.Width, m_rect.Height);
-            switch (m_direction) {
-                case Key.UpArrow:
-                    srcRect.Y = 0;
-                    break;
-                case Key.DownArrow:
-                    srcRect.Y = m_rect.Height * 2;
-                    break;
-                case Key.LeftArrow:
-                    srcRect.Y = m_rect.Height * 3;
-                    break;
-                case Key.RightArrow:
-                    srcRect.Y = m_rect.Height;
-                    break;
-            }
-            srcRect.X = m_rect.Width * m_walkanim;
-
-            Camera.X = m_rect.X - world.X - Camera.X;
-            Camera.Y = m_rect.Y - world.Y - Camera.Y;
-            Camera.Width = m_rect.Width;
-            Camera.Height = m_rect.Height;
-
-            dest.Blit(m_tileset, Camera, srcRect);
         }
     }
 }
