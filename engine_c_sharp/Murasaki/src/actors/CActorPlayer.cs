@@ -8,7 +8,7 @@ using SdlDotNet.Graphics;
 using SdlDotNet.Input;
 
 namespace Murasaki {
-    class CActorPlayer : CActor {
+    public class CActorPlayer : CActor {
         public override bool moveup { get { return m_moveup; } set { m_moveup = value; setDirection(); } }
         public override bool movedown { get { return m_movedown; } set { m_movedown = value; setDirection(); } }
         public override bool moveleft { get { return m_moveleft; } set { m_moveleft = value; setDirection(); } }

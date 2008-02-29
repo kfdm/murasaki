@@ -17,10 +17,36 @@ namespace Murasaki {
                     Events.QuitApplication();
                     break;
                 case Key.UpArrow:
+                    m_CurrentMap.Avatar.moveup = true;
+                    break;
                 case Key.DownArrow:
+                    m_CurrentMap.Avatar.movedown = true;
+                    break;
                 case Key.LeftArrow:
+                    m_CurrentMap.Avatar.moveleft = true;
+                    break;
                 case Key.RightArrow:
-                    m_CurrentMap.OnKeyboardDown(e);
+                    m_CurrentMap.Avatar.moveright = true;
+                    break;
+                case Key.Space:
+                    CActorBullet tmp = new CActorBullet("Data/bullet.png");
+                    tmp.Top = m_CurrentMap.Avatar.Top;
+                    tmp.Left = m_CurrentMap.Avatar.Left;
+                    switch (m_CurrentMap.Avatar.direction) {
+                        case Key.UpArrow:
+                            tmp.moveup = true;
+                            break;
+                        case Key.DownArrow:
+                            tmp.movedown = true;
+                            break;
+                        case Key.LeftArrow:
+                            tmp.moveleft = true;
+                            break;
+                        case Key.RightArrow:
+                            tmp.moveright = true;
+                            break;
+                    }
+                    m_CurrentMap.Actors.AddLast(tmp);
                     break;
             }
         }
@@ -28,10 +54,16 @@ namespace Murasaki {
             Console.WriteLine("CPlayState OnKeyboardUp");
             switch (e.Key) {
                 case Key.UpArrow:
+                    m_CurrentMap.Avatar.moveup = false;
+                    break;
                 case Key.DownArrow:
+                    m_CurrentMap.Avatar.movedown = false;
+                    break;
                 case Key.LeftArrow:
+                    m_CurrentMap.Avatar.moveleft = false;
+                    break;
                 case Key.RightArrow:
-                    m_CurrentMap.OnKeyboardUp(e);
+                    m_CurrentMap.Avatar.moveright = false;
                     break;
             }
         }

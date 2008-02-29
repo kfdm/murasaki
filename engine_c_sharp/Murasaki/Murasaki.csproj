@@ -58,10 +58,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="samsrc\GameEngine.cs" />
-    <Compile Include="CActor.cs" />
-    <Compile Include="CActorCivilian.cs" />
-    <Compile Include="CActorPlayer.cs" />
+    <Compile Include="src\actors\CActor.cs" />
+    <Compile Include="src\actors\CActorCivilian.cs" />
+    <Compile Include="src\actors\CActorPlayer.cs" />
+    <Compile Include="src\actors\CActorBullet.cs" />
     <Compile Include="src\map\CMap.cs" />
     <Compile Include="src\states\CPlayState.cs" />
     <Compile Include="src\states\CIntroState.cs" />
@@ -69,15 +69,13 @@
     <Compile Include="src\states\CGameState.cs" />
     <Compile Include="src\map\CTileSet.cs" />
     <Compile Include="Main.cs" />
-    <None Include="refsrc\Other.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="refsrc\TileEngine.cs" />
-    <None Include="samsrc\GameState.cs" />
-    <None Include="samsrc\MurasakiEngine.cs" />
-    <None Include="samsrc\Program.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\avatar.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\bullet.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\pink.png">
