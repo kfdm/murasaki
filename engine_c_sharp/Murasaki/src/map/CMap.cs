@@ -12,6 +12,7 @@ using System.Drawing;
 namespace Murasaki {
     public class CTileMap {
         public CActorPlayer Avatar { get { return m_avatar; } }
+        public LinkedList<CActor> Weapons { get { return m_avatar_weapons; } }
         public LinkedList<CActor> Actors { get { return m_actors; } }
 
         private CTileSet m_TileSet;
@@ -28,18 +29,18 @@ namespace Murasaki {
         private Surface m_surface;
 
         private CActorPlayer m_avatar;
-        private LinkedList<CActor> m_actors;
+        private LinkedList<CActor> m_actors, m_actor_weapons, m_avatar_weapons;
 
         public CTileMap(string filename,int playerx, int playery) : this(filename) {
             movePlayer(playerx, playery);
         }
         public CTileMap(string filename) {
-            
-
             LoadAvatar("Data/avatar.png");
             LoadMap("Data/test.tmx");
 
             m_actors=new LinkedList<CActor>();
+            m_actor_weapons = new LinkedList<CActor>();
+            m_avatar_weapons = new LinkedList<CActor>();
             m_actors.AddLast( new CActorCivilian("data/pink.png",26,13,m_TileSize));
 
             m_surface = new Surface(m_camera_width * m_TileSize, m_camera_height * m_TileSize);
@@ -140,17 +141,40 @@ namespace Murasaki {
             xml.MoveToContent();
         }
         public void Update() {
-            List<CActor> toRemove = new List<CActor>();
+            List<CActor> toRemoveWeapons = new List<CActor>();
+            List<CActor> toRemoveActors = new List<CActor>();
 
+            //Update Avatar
             m_avatar.Update();
-            UpdateActorColide(m_avatar, toRemove);
+            UpdateActorColide(m_avatar, toRemoveWeapons);
 
+            //Update Avatar Weapons
+            foreach (CActor weapon in m_avatar_weapons) {
+                weapon.Update();
+                UpdateActorColide(weapon, toRemoveWeapons);
+                foreach(CActor actor in m_actors) {
+                    if (weapon.Rectangle.IntersectsWith(actor.Rectangle)) {
+                        Console.WriteLine("Hit Actor");
+                        toRemoveWeapons.Add(weapon);
+                        toRemoveActors.Add(actor);
+                    }
+                }
+            }
+            //Remove Dead Weapons and Actors
+            foreach (CActor actor in toRemoveWeapons)
+                m_avatar_weapons.Remove(actor);
+            foreach (CActor actor in toRemoveActors)
+                m_actors.Remove(actor);
+
+
+            //Update Actors
             foreach (CActor actor in m_actors) {
                 actor.Update();
-                UpdateActorColide(actor,toRemove);
+                UpdateActorColide(actor,toRemoveWeapons);
             }
-            foreach(CActor actor in toRemove)
-                 m_actors.Remove(actor);
+
+
+            
         }
         private void UpdateActorColide(CActor actor,List<CActor> toRemove) {
             int top, bottom, left, right;
@@ -213,14 +237,39 @@ namespace Murasaki {
             tmp.Dispose();
         }
         private void DrawActors(int CamLeft, int CamTop) {
+            int left, top;
             Rectangle m_world = new Rectangle(CamLeft * m_TileSize, CamTop * m_TileSize, m_camera_width * m_TileSize, m_camera_height * m_TileSize);
+
+            //Draw Avatar
             m_avatar.Draw(m_surface, m_world, m_camera);
+
+            //Draw Avatar Weapons
+            foreach (CActor actor in m_avatar_weapons) {
+                left = actor.Left / m_TileSize;
+                top = actor.Top / m_TileSize;
+                if (left >= CamLeft && left < CamLeft + m_camera_width &&
+                    top >= CamTop && top < CamTop + m_camera_width) {
+                    actor.Draw(m_surface, m_world, m_camera);
+                }
+            }
+
+            //Draw Actors
             foreach (CActor actor in m_actors) {
-                int left = actor.Left / m_TileSize;
-                int top = actor.Top / m_TileSize;
+                left = actor.Left / m_TileSize;
+                top = actor.Top / m_TileSize;
                 if (left >= CamLeft && left < CamLeft + m_camera_width &&
                     top >= CamTop && top < CamTop + m_camera_width) {
                     actor.Draw(m_surface,m_world, m_camera);
+                }
+            }
+
+            //Draw Actors Weapons
+            foreach (CActor actor in m_actor_weapons) {
+                left = actor.Left / m_TileSize;
+                top = actor.Top / m_TileSize;
+                if (left >= CamLeft && left < CamLeft + m_camera_width &&
+                    top >= CamTop && top < CamTop + m_camera_width) {
+                    actor.Draw(m_surface, m_world, m_camera);
                 }
             }
         }

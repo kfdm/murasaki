@@ -28,6 +28,12 @@ namespace Murasaki {
                 case Key.RightArrow:
                     m_CurrentMap.Avatar.moveright = true;
                     break;
+                case Key.F5:
+                    Video.Screen.SaveBmp("screenshot.bmp");
+                    break;
+                case Key.Backspace:
+                    m_CurrentMap.Actors.AddLast(new CActorCivilian("data/pink.png", 26, 13, 24));
+                    break;
                 case Key.Space:
                     CActorBullet tmp = new CActorBullet("Data/bullet.png");
                     tmp.Top = m_CurrentMap.Avatar.Top;
@@ -46,7 +52,7 @@ namespace Murasaki {
                             tmp.moveright = true;
                             break;
                     }
-                    m_CurrentMap.Actors.AddLast(tmp);
+                    m_CurrentMap.Weapons.AddLast(tmp);
                     break;
             }
         }

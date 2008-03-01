@@ -13,6 +13,7 @@ namespace Murasaki {
         public virtual bool movedown { get { return m_movedown; } set { m_movedown = value; m_direction = Key.DownArrow; } }
         public virtual bool moveleft { get { return m_moveleft; } set { m_moveleft = value; m_direction = Key.LeftArrow; } }
         public virtual bool moveright { get { return m_moveright; } set { m_moveright = value; m_direction = Key.RightArrow; } }
+        public virtual Rectangle Rectangle { get { return m_rect; } }
         public virtual int movespeed { get { return m_movespeed; } set { m_movespeed = value; } }
         public virtual Key direction { get { return m_direction; } }
 

@@ -68,6 +68,7 @@ namespace Murasaki  {
         private void OnTick(object sender, TickEventArgs e) {
             ((CGameState)states.Peek()).Update(this);
             ((CGameState)states.Peek()).Draw(this);
+            Video.WindowCaption = Events.Fps.ToString() + " fps";
             Video.Screen.Update();
         }
         private void OnQuit(object sender, QuitEventArgs e) {
