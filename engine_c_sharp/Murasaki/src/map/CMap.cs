@@ -98,14 +98,14 @@ namespace Murasaki {
             //Read in Layer
             currentlayer = new int[m_MapHeight, m_MapWidth];
             //Move to the first tile node
-            layer = layer.FirstChild.FirstChild;
+            layer = layer.FirstChild;
+            String text = layer.InnerText.Trim();
+            byte[] bytes = Convert.FromBase64String(text);
+            int currbyte = 0;
             for (int y = 0; y < m_MapHeight; y++) {
                 for (int x = 0; x < m_MapWidth; x++) {
-                    XmlAttributeCollection attrs = layer.Attributes;
-                    XmlAttribute attr = attrs[0];
-                    int tile = Convert.ToInt16(attr.Value);
-                    currentlayer[x, y] = tile;
-                    layer = layer.NextSibling;
+                    currentlayer[x, y] = bytes[currbyte];
+                    currbyte+=4;
                 }
             }
 
