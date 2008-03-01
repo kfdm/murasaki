@@ -14,6 +14,7 @@ namespace Murasaki {
         public CActorPlayer Avatar { get { return m_avatar; } }
         public LinkedList<CActor> Weapons { get { return m_avatar_weapons; } }
         public LinkedList<CActor> Actors { get { return m_actors; } }
+        public Dictionary<String,CActor> Entities { get { return m_entities; } } 
 
         private CTileSet m_TileSet;
         private int m_MapHeight, m_MapWidth;
@@ -30,6 +31,7 @@ namespace Murasaki {
 
         private CActorPlayer m_avatar;
         private LinkedList<CActor> m_actors, m_actor_weapons, m_avatar_weapons;
+        private Dictionary<String,CActor> m_entities;
 
         public CTileMap(string filename,int playerx, int playery) : this(filename) {
             movePlayer(playerx, playery);
@@ -43,6 +45,8 @@ namespace Murasaki {
             m_avatar_weapons = new LinkedList<CActor>();
             m_actors.AddLast( new CActorCivilian("data/pink.png",26,13,m_TileSize));
 
+            m_entities = new Dictionary<String,CActor>();
+
             m_surface = new Surface(m_camera_width * m_TileSize, m_camera_height * m_TileSize);
             m_camera = new Rectangle(0, 0, m_camera_width * m_TileSize, m_camera_height * m_TileSize);
             Video.SetVideoMode(m_camera_width * m_TileSize, m_camera_height * m_TileSize);
@@ -54,91 +58,120 @@ namespace Murasaki {
             m_avatar = new CActorPlayer(filename);
         }
         private void LoadMap(string filename) {
-            System.Xml.XmlTextReader reader = new System.Xml.XmlTextReader(filename);
-            while (reader.Read()) {
-                reader.MoveToContent();
-                if (reader.IsStartElement()) {
-                    switch (reader.Name) {
-                        case "map":
-                            Console.WriteLine("Found Map!");
-                            m_TileSize = Convert.ToInt16(reader.GetAttribute("tilewidth"));
-                            m_MapWidth = Convert.ToInt16(reader.GetAttribute("width"));
-                            m_MapHeight = Convert.ToInt16(reader.GetAttribute("height"));
-                            
-                            m_MapBase = new int[m_MapHeight, m_MapWidth];
-                            m_MapColide = new int[m_MapHeight, m_MapWidth];
-                            m_MapDetail = new int[m_MapHeight, m_MapWidth];
-                            break;
-                        case "properties":
-                            Console.WriteLine("Found Properties");
-                            LoadMapProperties(reader);
-                            break;
-                        case "tileset":
-                            Console.WriteLine("Found Tileset");
-                            Console.WriteLine(reader.GetAttribute("name"));
-                            LoadMapTileset(reader);
-                            break;
-                        case "layer":
-                            String name = reader.GetAttribute("name");
-                            Console.WriteLine("Found Layer:"+name);
-                            int width = Convert.ToInt32(reader.GetAttribute("width"));
-                            int height = Convert.ToInt32(reader.GetAttribute("height"));
-                            switch (name) {
-                                case "Base":
-                                    LoadMapLayer(reader, width, height, m_MapBase);
-                                    break;
-                                case "Colide":
-                                    LoadMapLayer(reader, width, height, m_MapColide);
+            XmlDocument xml;
+            XmlNodeList nodes;
 
-                                    break;
-                                case "Detail":
-                                    LoadMapLayer(reader, width, height, m_MapDetail);
-                                    break;
-                            }
-                            break;
-                    }
-                }
-            }
+            xml = new XmlDocument();
+            xml.Load(filename);
+            nodes = xml.SelectNodes("map");
+            foreach (XmlNode map in nodes)
+                LoadMapInfo(map);
+            nodes = xml.SelectNodes("map/properties");
+            foreach (XmlNode properties in nodes)
+                LoadMapProperties(properties);
+            nodes = xml.SelectNodes("map/layer");
+            foreach (XmlNode layer in nodes)
+                LoadMapLayer(layer);
+            nodes = xml.SelectNodes("map/tileset");
+            foreach (XmlNode tileset in nodes)
+                LoadMapTileset(tileset);
+            nodes = xml.SelectNodes("map/objectgroup");
+            foreach (XmlNode objectgroup in nodes)
+                LoadMapObjectgroup(objectgroup);
+            return;
         }
-        private void LoadMapProperties(XmlReader xml) {
-            int startx = 15, starty = 15;
-            while (xml.Read()) {
-                xml.MoveToContent();
-                //Exit if we find the </properties> tag
-                if (xml.Name == "properties") {
-                    movePlayer(startx, starty);
-                    return;
-                }
-                switch (xml.GetAttribute("name")) {
-                    case "startx":
-                        startx = Convert.ToInt32(xml.GetAttribute("value"));
-                        break;
-                    case "starty":
-                        starty = Convert.ToInt32(xml.GetAttribute("value"));
-                        break;
-                }
-            }
+        private void LoadMapLayer(XmlNode layer) {
+            int[,] currentlayer;
+            string layername = "";
             
-        }
-        private void LoadMapTileset(XmlReader xml) {
-            m_TileSet = new CTileSet("Data/sewer_tileset.png");
-        }
-        private void LoadMapLayer(XmlReader xml, int width, int height, int[,] map) {
-            Console.WriteLine("{0} {1}", width, height);
-            xml.Read();  //Read in Data Tag
-            xml.MoveToContent();
+            //Read Layer Attributes
+            foreach (XmlAttribute attr in layer.Attributes) {
+                switch (attr.Name) {
+                    case "name":
+                        layername = attr.Value;
+                        break;
+                    default:
+                        Console.WriteLine("Unknown attr {0}={1} in LoadMapLayer()", attr.Name, attr.Value);
+                        break;
+                }
+            }
+            //Read in Layer
+            currentlayer = new int[m_MapHeight, m_MapWidth];
+            //Move to the first tile node
+            layer = layer.FirstChild.FirstChild;
             for (int y = 0; y < m_MapHeight; y++) {
                 for (int x = 0; x < m_MapWidth; x++) {
-                    xml.Read();
-                    xml.MoveToContent();
-                    int tile = Convert.ToInt16(xml.GetAttribute("gid"));
-                    map[x,y] = tile;
-                    Console.Write(" {0} ",tile);
+                    XmlAttributeCollection attrs = layer.Attributes;
+                    XmlAttribute attr = attrs[0];
+                    int tile = Convert.ToInt16(attr.Value);
+                    currentlayer[x, y] = tile;
+                    layer = layer.NextSibling;
                 }
-                Console.WriteLine();
             }
-            xml.Read();  //Read in Data Tag
-            xml.MoveToContent();
+
+            //Save layer
+            switch (layername) {
+                case "Base":
+                    m_MapBase = currentlayer;
+                    break;
+                case "Colide":
+                    m_MapColide = currentlayer;
+                    break;
+                case "Detail":
+                    m_MapDetail = currentlayer;
+                    break;
+            }
+        }
+        private void LoadMapTileset(XmlNode tileset) {
+            m_TileSet = new CTileSet("Data/sewer_tileset.png");
+        }
+        private void LoadMapInfo(XmlNode map) {
+            foreach (XmlAttribute attr in map.Attributes) {
+                switch (attr.Name) {
+                    case "width":
+                        m_MapWidth = Convert.ToInt16(attr.Value);
+                        break;
+                    case "height":
+                        m_MapHeight = Convert.ToInt16(attr.Value);
+                        break;
+                    case "tilewidth":
+                        m_TileSize = Convert.ToInt16(attr.Value);
+                        break;
+                    default:
+                        Console.WriteLine("Unknown attr {0}={1} in LoadMapInfo()", attr.Name, attr.Value);
+                        break;
+                }
+            }
+        }
+        private void LoadMapProperties(XmlNode properties) {
+            int startx = 0, starty = 0;
+
+            foreach (XmlNode tmp in properties.SelectNodes("property")) {
+                XmlAttributeCollection attr = tmp.Attributes;
+                switch (attr["name"].Value) {
+                    case "startx":
+                        startx = Convert.ToInt16(attr["value"].Value);
+                        break;
+                    case "starty":
+                        starty = Convert.ToInt16(attr["value"].Value);
+                        break;
+                    default:
+                        Console.WriteLine("Unknown attr {0}={1} in LoadMapInfo()", attr["name"].Value, attr["value"].Value);
+                        break;
+                }
+            }
+
+            movePlayer(startx, starty);
+        }
+        private void LoadMapObjectgroup(XmlNode objectgroup) {
+            foreach (XmlNode entity in objectgroup.ChildNodes) {
+                XmlAttributeCollection attr = entity.Attributes;
+                switch (attr["type"].Value) {
+                    default:
+                        Console.WriteLine("Unknown Entity Type {0} in LoadMapObjectgroup()", attr["type"].Value);
+                        break;
+                }
+            }
         }
         public void Update() {
             List<CActor> toRemoveWeapons = new List<CActor>();

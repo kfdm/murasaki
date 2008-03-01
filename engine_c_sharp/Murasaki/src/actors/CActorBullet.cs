@@ -19,7 +19,7 @@ namespace Murasaki {
             m_movespeed = 5;
         }
         ~CActorBullet() {
-            
+            m_tileset.Dispose();
         }
         public override void CollideWall() {
             
