@@ -25,11 +25,11 @@
   </data>
   <tileproperties/>
  </layer>
- <objectgroup name="Object Group 4" width="0" height="0" yoffset="1">
+ <objectgroup name="Object Group 4" width="0" height="0">
   <object name="" type="CEntityTransition" x="298" y="394" width="5" height="5">
    <properties>
     <property name="Map">
-     test.tmx
+     test2.tmx
     </property>
     <property name="Y">
      16
