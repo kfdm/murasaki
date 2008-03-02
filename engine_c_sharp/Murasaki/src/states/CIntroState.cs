@@ -3,7 +3,7 @@ using SdlDotNet.Core;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
 
-namespace Murasaki {
+namespace Murasaki.State {
     class CIntroState : CGameState {
         private static CIntroState m_IntroState;
         private Surface bg;

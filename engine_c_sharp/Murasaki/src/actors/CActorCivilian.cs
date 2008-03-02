@@ -7,7 +7,7 @@ using SdlDotNet.Core;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
 
-namespace Murasaki {
+namespace Murasaki.Actors {
     class CActorCivilian : CActor{
         public override bool moveup { get { return m_moveup; } set { m_moveup = value; m_direction = Key.UpArrow; } }
         public override bool movedown { get { return m_movedown; } set { m_movedown = value; m_direction = Key.DownArrow; } }

@@ -4,6 +4,8 @@ using SdlDotNet.Core;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
 
+using Murasaki.State;
+
 namespace Murasaki  {
     public class CGameEngine {
         /// <summary>
@@ -103,6 +105,13 @@ namespace Murasaki  {
         }
         public void Run() {
             Events.Run();
+        }
+        public static void Main() {
+            CGameEngine game = new CGameEngine();
+            game.Init("Engine Test");
+            //game.ChangeState(CIntroState.Instance());
+            game.ChangeState(CPlayState.Instance());
+            game.Run();
         }
     }
 }

@@ -6,7 +6,7 @@ using SdlDotNet.Graphics;
 using SdlDotNet.Graphics.Sprites;
 using System.Drawing;
 
-namespace Murasaki {
+namespace Murasaki.Map {
     public class CTileSet {
         private int m_numx, m_numy,m_tilesize;
         public Sprite m_tilemap;

@@ -8,7 +8,10 @@ using SdlDotNet.Core;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
 
-namespace Murasaki {
+using Murasaki.State;
+using Murasaki.Map;
+
+namespace Murasaki.Entitys {
     public class CEntityTransition : CEntity {
         CTileMap m_map;
         String newmap;

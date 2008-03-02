@@ -4,7 +4,10 @@ using SdlDotNet.Graphics;
 using SdlDotNet.Input;
 using System.Drawing;
 
-namespace Murasaki {
+using Murasaki.Actors;
+using Murasaki.Map;
+
+namespace Murasaki.State {
     class CPlayState : CGameState {
         const string START_MAP = "test.tmx";
         private static CPlayState m_PlayState;

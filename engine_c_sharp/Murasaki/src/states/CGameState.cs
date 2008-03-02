@@ -3,7 +3,7 @@ using SdlDotNet.Core;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
 
-namespace Murasaki {
+namespace Murasaki.State {
     public abstract class CGameState {
         public virtual void Init() { }
         public virtual void Cleanup() { }

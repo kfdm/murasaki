@@ -9,7 +9,10 @@ using SdlDotNet.Graphics;
 using SdlDotNet.Graphics.Sprites;
 using System.Drawing;
 
-namespace Murasaki {
+using Murasaki.Actors;
+using Murasaki.Entitys;
+
+namespace Murasaki.Map {
     public class CTileMap {
         #region Properties
         public CActorPlayer Avatar { get { return m_avatar; } }

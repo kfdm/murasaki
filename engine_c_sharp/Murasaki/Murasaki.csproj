@@ -8,12 +8,12 @@
     <ProjectGuid>{A83BC67F-5175-4901-A1AB-C5E1E4107B5A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Murasaki</RootNamespace>
+    <RootNamespace>Murasaki.State</RootNamespace>
     <AssemblyName>Murasaki</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <StartupObject>Murasaki.Program</StartupObject>
+    <StartupObject>Murasaki.CGameEngine</StartupObject>
     <ManifestCertificateThumbprint>FE1A7B239EDF405D02F23DA6487810ADA49FF273</ManifestCertificateThumbprint>
     <ManifestKeyFile>Murasaki_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
@@ -73,7 +73,6 @@
     <Compile Include="src\CGameEngine.cs" />
     <Compile Include="src\states\CGameState.cs" />
     <Compile Include="src\map\CTileSet.cs" />
-    <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

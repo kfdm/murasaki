@@ -7,7 +7,7 @@ using SdlDotNet.Core;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
 
-namespace Murasaki {
+namespace Murasaki.Actors {
     class CActorBullet : CActor{
         public CActorBullet(string filename) {
             m_tileset = new Surface(filename);

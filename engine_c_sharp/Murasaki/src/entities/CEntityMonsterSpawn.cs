@@ -3,7 +3,10 @@ using System.Xml;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Murasaki {
+using Murasaki.Actors;
+using Murasaki.Map;
+
+namespace Murasaki.Entitys {
     class CEntityMonsterSpawn : CEntity {
         public CEntityMonsterSpawn(CTileMap map, XmlAttributeCollection attributes, XmlNodeList properties) {
             Dictionary<string, string> props = new Dictionary<string, string>();
