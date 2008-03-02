@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace Murasaki {
     class CPlayState : CGameState {
-        const string START_MAP = "Data/Start.map";
+        const string START_MAP = "test.tmx";
         private static CPlayState m_PlayState;
         private static CTileMap m_CurrentMap;
         private Random m_rand;
@@ -86,6 +86,8 @@ namespace Murasaki {
         }
         public void ChangeMap(CTileMap map) {
             m_CurrentMap = map;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
         public override void Draw(CGameEngine game) {
             Video.Screen.Fill(Color.White);

@@ -11,15 +11,17 @@ using System.Drawing;
 
 namespace Murasaki {
     public class CTileMap {
+        #region Properties
         public CActorPlayer Avatar { get { return m_avatar; } }
         public LinkedList<CActor> Weapons { get { return m_avatar_weapons; } }
         public LinkedList<CActor> Actors { get { return m_actors; } }
-        public LinkedList<CEntity> Entities { get { return m_entities; } } 
+        public LinkedList<CEntity> Entities { get { return m_entities; } }
+        #endregion
 
+        #region Private
         private CTileSet m_TileSet;
-        private int m_MapHeight, m_MapWidth;
-        private int m_TileSize;
-        private int[,] m_MapBase,m_MapDetail,m_MapColide;
+        private int m_MapHeight, m_MapWidth, m_TileSize;
+        private CMapLayer m_MapBase,m_MapDetail,m_MapColide;
 
         private Rectangle m_camera;
         private const int m_camera_width = 25;
@@ -28,12 +30,13 @@ namespace Murasaki {
         private const int m_camera_halfheight = m_camera_height / 2;
 
         private Surface m_surface;
-        private Surface b_MapBase, b_MapDetail, b_MapColide;
 
         private CActorPlayer m_avatar;
         private LinkedList<CActor> m_actors, m_actor_weapons, m_avatar_weapons;
         private LinkedList<CEntity> m_entities;
+        #endregion
 
+        #region Constuctors/Destructors
         public CTileMap(string filename,int playerx, int playery) : this(filename) {
             movePlayer(playerx, playery);
         }
@@ -44,26 +47,18 @@ namespace Murasaki {
             m_entities = new LinkedList<CEntity>();
             
             LoadAvatar("Data/avatar.png");
-            LoadMap("Data/test.tmx");
-            
-            m_surface = new Surface(m_camera_width * m_TileSize, m_camera_height * m_TileSize);
-            b_MapBase = new Surface(m_MapWidth * m_TileSize, m_MapHeight * m_TileSize);
-            b_MapColide = new Surface(m_MapWidth * m_TileSize, m_MapHeight * m_TileSize);
-            b_MapDetail = new Surface(m_MapWidth * m_TileSize, m_MapHeight * m_TileSize);
+            LoadMap("Data/" + filename);
 
-            ReDrawLayer(m_MapBase, b_MapBase);
-            ReDrawLayer(m_MapColide, b_MapColide);
-            ReDrawLayer(m_MapDetail, b_MapDetail);
-
+            m_surface = new Surface(m_MapWidth * m_TileSize, m_MapHeight * m_TileSize);
             m_camera = new Rectangle(0, 0, m_camera_width * m_TileSize, m_camera_height * m_TileSize);
             Video.SetVideoMode(m_camera_width * m_TileSize, m_camera_height * m_TileSize);
         }
         ~CTileMap() {
             m_surface.Dispose();
-            b_MapBase.Dispose();
-            b_MapColide.Dispose();
-            b_MapDetail.Dispose();
         }
+        #endregion
+
+        #region Loader
         private void LoadAvatar(string filename) {
             m_avatar = new CActorPlayer(filename);
         }
@@ -79,12 +74,12 @@ namespace Murasaki {
             nodes = xml.SelectNodes("map/properties");
             foreach (XmlNode properties in nodes)
                 LoadMapProperties(properties);
-            nodes = xml.SelectNodes("map/layer");
-            foreach (XmlNode layer in nodes)
-                LoadMapLayer(layer);
             nodes = xml.SelectNodes("map/tileset");
             foreach (XmlNode tileset in nodes)
                 LoadMapTileset(tileset);
+            nodes = xml.SelectNodes("map/layer");
+            foreach (XmlNode layer in nodes)
+                LoadMapLayer(layer);
             nodes = xml.SelectNodes("map/objectgroup");
             foreach (XmlNode objectgroup in nodes)
                 LoadMapObjectgroup(objectgroup);
@@ -122,18 +117,22 @@ namespace Murasaki {
             //Save layer
             switch (layername) {
                 case "Base":
-                    m_MapBase = currentlayer;
+                    m_MapBase = new CMapLayer(currentlayer, m_MapWidth, m_MapHeight, m_TileSet);
                     break;
                 case "Colide":
-                    m_MapColide = currentlayer;
+                    m_MapColide = new CMapLayer(currentlayer, m_MapWidth, m_MapHeight, m_TileSet);
                     break;
                 case "Detail":
-                    m_MapDetail = currentlayer;
+                    m_MapDetail = new CMapLayer(currentlayer, m_MapWidth, m_MapHeight, m_TileSet);
                     break;
             }
         }
         private void LoadMapTileset(XmlNode tileset) {
-            m_TileSet = new CTileSet("Data/sewer_tileset.png");
+            tileset = tileset.FirstChild;
+            String filename = "Data/"+ tileset.Attributes["source"].Value;
+            String colorstr = tileset.Attributes["trans"].Value;
+            Color trans = Color.FromArgb(255, 0, 255);
+            m_TileSet = new CTileSet(filename,m_TileSize, trans);
         }
         private void LoadMapInfo(XmlNode map) {
             foreach (XmlAttribute attr in map.Attributes) {
@@ -190,6 +189,9 @@ namespace Murasaki {
                 }
             }
         }
+        #endregion
+
+        #region UpdateLoop
         public void Update() {
             List<CActor> toRemoveWeapons = new List<CActor>();
             List<CActor> toRemoveActors = new List<CActor>();
@@ -240,28 +242,29 @@ namespace Murasaki {
 
             if (actor.moveup || actor.movedown || actor.moveleft || actor.moveright) {
                 //Top
-                if (m_MapColide[left, top] != 0 && m_MapColide[right, top] != 0) {
+                m_MapColide.Collide(left, top);
+                if (m_MapColide.Collide(left, top) && m_MapColide.Collide(right, top)) {
                     actor.Top = (top + 1) * m_TileSize;
                     top = actor.Top / m_TileSize;
                     bottom = actor.Bottom / m_TileSize;
                     collide = true;
                 }
                 //Bottom
-                if (m_MapColide[left, bottom] != 0 && m_MapColide[right, bottom] != 0) {
+                if (m_MapColide.Collide(left, bottom) && m_MapColide.Collide(right, bottom)) {
                     actor.Bottom = (bottom * m_TileSize) - 1;
                     top = actor.Top / m_TileSize;
                     bottom = actor.Bottom / m_TileSize;
                     collide = true;
                 }
                 //Left
-                if (m_MapColide[left, top] != 0 && m_MapColide[left, bottom] != 0) {
+                if (m_MapColide.Collide(left, top) && m_MapColide.Collide(left, bottom)) {
                     actor.Left = (left + 1) * m_TileSize;
                     left = actor.Left / m_TileSize;
                     right = actor.Right / m_TileSize;
                     collide = true;
                 }
                 //Right
-                if (m_MapColide[right, top] != 0 && m_MapColide[right, bottom] != 0) {
+                if (m_MapColide.Collide(right, top) && m_MapColide.Collide(right, bottom)) {
                     actor.Right = (right * m_TileSize) - 1;
                     left = actor.Left / m_TileSize;
                     right = actor.Right / m_TileSize;
@@ -274,25 +277,9 @@ namespace Murasaki {
                 actor.CollideWall();
             }
         }
-        private void ReDrawLayer(int[,] layer, Surface surface) {
-            surface.Fill(Color.Purple);
-            surface.Transparent = true;
-            surface.TransparentColor = Color.Purple;
+        #endregion
 
-            Rectangle destRect, srcRect;
-            for (int y = 0; y < m_MapHeight; y++) {
-                for (int x = 0; x < m_MapWidth; x++) {
-                    if (layer[x, y] != 0) {
-                        srcRect = m_TileSet.GetTile(layer[x, y]);
-                        destRect = new Rectangle(x * m_TileSize, y * m_TileSize, m_TileSize, m_TileSize);
-                        surface.Blit(m_TileSet.m_tilemap.Surface, destRect, srcRect);
-                    }
-                }
-            }
-        }
-        private void DrawLayer(int[,] layer,Surface buffer) {
-            m_surface.Blit(buffer, m_surface.Rectangle, m_camera);
-        }
+        #region DrawLoop
         private void DrawActors() {
             int CamLeft = m_camera.X / m_TileSize;
             int CamTop = m_camera.Y / m_TileSize;
@@ -335,12 +322,17 @@ namespace Murasaki {
             m_camera.Y = m_avatar.Top + (m_avatar.Height / 2) - (m_camera_halfheight * m_TileSize);
             
             m_surface.Fill(Color.Black);
-            DrawLayer(m_MapBase, b_MapBase);
-            DrawLayer(m_MapColide, b_MapColide);
+            
+            m_MapBase.Draw(m_surface, m_camera);
+            m_MapColide.Draw(m_surface, m_camera);
             DrawActors();
-            DrawLayer(m_MapDetail, b_MapDetail);
+            m_MapDetail.Draw(m_surface, m_camera);
+
             dest.Blit(m_surface, size);
         }
+        #endregion
+
+        #region Misc
         private void movePlayer(int x, int  y) {
             if (x > 0 && x < m_MapWidth && y > 0 && y < m_MapHeight) {
                 m_avatar.Left = x * m_TileSize;
@@ -349,5 +341,6 @@ namespace Murasaki {
                 Console.WriteLine("Error: can't move player to %d,%d", x, y);
             }
         }
+        #endregion
     }
 }

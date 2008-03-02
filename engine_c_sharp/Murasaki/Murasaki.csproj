@@ -18,7 +18,8 @@
     <ManifestKeyFile>Murasaki_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>true</SignManifests>
-    <PublishUrl>publish\</PublishUrl>
+    <NoWin32Manifest>true</NoWin32Manifest>
+    <PublishUrl>C:\Documents and Settings\Paul Traylor\Desktop\New Folder\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -28,14 +29,13 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>false</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
@@ -44,7 +44,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -67,6 +67,7 @@
     <Compile Include="src\entities\CEntityMonsterSpawn.cs" />
     <Compile Include="src\entities\CEntityTransition.cs" />
     <Compile Include="src\map\CMap.cs" />
+    <Compile Include="src\map\CMapLayer.cs" />
     <Compile Include="src\states\CPlayState.cs" />
     <Compile Include="src\states\CIntroState.cs" />
     <Compile Include="src\CGameEngine.cs" />
@@ -113,6 +114,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\test.tmx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\test2.tmx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Murasaki_TemporaryKey.pfx" />

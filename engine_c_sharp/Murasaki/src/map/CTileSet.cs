@@ -7,9 +7,12 @@ using SdlDotNet.Graphics.Sprites;
 using System.Drawing;
 
 namespace Murasaki {
-    class CTileSet {
+    public class CTileSet {
         private int m_numx, m_numy,m_tilesize;
         public Sprite m_tilemap;
+
+        public int TileSize { get { return m_tilesize; } }
+
         public CTileSet(string filename) : this(filename, 24, Color.FromArgb(255, 0, 255)) { }
         public CTileSet(string filename, int tilesize) : this(filename, tilesize, Color.FromArgb(255, 0, 255)) { }
         public CTileSet(string filename,int tilesize,Color transparent) {
