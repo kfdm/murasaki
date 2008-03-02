@@ -11,7 +11,6 @@ namespace Murasaki {
         private static CTileMap m_CurrentMap;
         private Random m_rand;
         public override void OnKeyboardDown(CGameEngine game, KeyboardEventArgs e) {
-            Console.WriteLine("CPlayState OnKeyboardDown");
             switch (e.Key) {
                 case Key.Escape:
                 case Key.Q:
@@ -59,7 +58,6 @@ namespace Murasaki {
             }
         }
         public override void OnKeyboardUp(CGameEngine game, KeyboardEventArgs e) {
-            Console.WriteLine("CPlayState OnKeyboardUp");
             switch (e.Key) {
                 case Key.UpArrow:
                     m_CurrentMap.Avatar.moveup = false;

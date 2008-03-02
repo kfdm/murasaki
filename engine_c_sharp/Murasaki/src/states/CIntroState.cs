@@ -18,10 +18,8 @@ namespace Murasaki {
             fader.Alpha = 255;
             fader.Fill(System.Drawing.Color.Black);
             fader.AlphaBlending = true;
-            Console.WriteLine("CIntroState Init");
         }
         public override void OnKeyboardDown(CGameEngine game, KeyboardEventArgs e) {
-            Console.WriteLine("CIntroState OnKeyboardDown");
             switch (e.Key) {
                 case Key.Escape:
                 case Key.Q:

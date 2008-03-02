@@ -31,7 +31,6 @@ namespace Murasaki  {
         /// <param name="fps">Frames per second</param>
         /// <param name="fullscreen">Full Screen</param>
         public void Init(string title, int width, int height, int bpp, int fps, bool fullscreen) {
-            Console.WriteLine("CGameEngine Init");
             Video.Initialize();
             Video.WindowCaption = title;
             Video.SetVideoMode(width, height, bpp);
@@ -46,18 +45,15 @@ namespace Murasaki  {
             Events.Quit += new EventHandler<QuitEventArgs>(this.OnQuit);
         }
         private void OnKeyboardDown(object sender, KeyboardEventArgs e) {
-            Console.WriteLine("CGameEngine OnKeyboardDown");
             ((CGameState)states.Peek()).OnKeyboardDown(this, e);
         }
         private void OnKeyboardUp(object sender, KeyboardEventArgs e) {
-            Console.WriteLine("CGameEngine OnKeyboardUp");
             ((CGameState)states.Peek()).OnKeyboardUp(this, e);
         }
         private void OnMouseMotion(object sender, MouseMotionEventArgs e) {
             ((CGameState)states.Peek()).OnMouseMotion(this, e);
         }
         private void OnMouseButtonDown(object sender, MouseButtonEventArgs e) {
-            Console.WriteLine("CGameEngine OnMouseButtonDown");
             ((CGameState)states.Peek()).OnMouseButtonDown(this, e);
         }
         /// <summary>
@@ -72,12 +68,10 @@ namespace Murasaki  {
             Video.Screen.Update();
         }
         private void OnQuit(object sender, QuitEventArgs e) {
-            Console.WriteLine("CGameEngine OnQuit");
             Events.Remove();
             Events.QuitApplication();
         }
         public void Cleanup() {
-            Console.WriteLine("CGameEngine Cleanup");
             while (states.Count > 0) {
                 ((CGameState)states.Peek()).Cleanup();
                 states.Pop();

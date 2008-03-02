@@ -49,8 +49,8 @@ namespace Murasaki {
             LoadAvatar("Data/avatar.png");
             LoadMap("Data/" + filename);
 
-            m_surface = new Surface(m_MapWidth * m_TileSize, m_MapHeight * m_TileSize);
             m_camera = new Rectangle(0, 0, m_camera_width * m_TileSize, m_camera_height * m_TileSize);
+            m_surface = new Surface(m_camera);
             Video.SetVideoMode(m_camera_width * m_TileSize, m_camera_height * m_TileSize);
         }
         ~CTileMap() {
