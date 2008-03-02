@@ -28,6 +28,7 @@ namespace Murasaki {
         private const int m_camera_halfheight = m_camera_height / 2;
 
         private Surface m_surface;
+        private Surface b_MapBase, b_MapDetail, b_MapColide;
 
         private CActorPlayer m_avatar;
         private LinkedList<CActor> m_actors, m_actor_weapons, m_avatar_weapons;
@@ -46,11 +47,22 @@ namespace Murasaki {
             LoadMap("Data/test.tmx");
             
             m_surface = new Surface(m_camera_width * m_TileSize, m_camera_height * m_TileSize);
+            b_MapBase = new Surface(m_MapWidth * m_TileSize, m_MapHeight * m_TileSize);
+            b_MapColide = new Surface(m_MapWidth * m_TileSize, m_MapHeight * m_TileSize);
+            b_MapDetail = new Surface(m_MapWidth * m_TileSize, m_MapHeight * m_TileSize);
+
+            ReDrawLayer(m_MapBase, b_MapBase);
+            ReDrawLayer(m_MapColide, b_MapColide);
+            ReDrawLayer(m_MapDetail, b_MapDetail);
+
             m_camera = new Rectangle(0, 0, m_camera_width * m_TileSize, m_camera_height * m_TileSize);
             Video.SetVideoMode(m_camera_width * m_TileSize, m_camera_height * m_TileSize);
         }
         ~CTileMap() {
             m_surface.Dispose();
+            b_MapBase.Dispose();
+            b_MapColide.Dispose();
+            b_MapDetail.Dispose();
         }
         private void LoadAvatar(string filename) {
             m_avatar = new CActorPlayer(filename);
@@ -262,28 +274,31 @@ namespace Murasaki {
                 actor.CollideWall();
             }
         }
-        private void DrawLayer(int[,] layer,int CameraLeft,int CameraTop) {
-            Surface tmp = new Surface(m_TileSize * (m_camera_width + 2), m_TileSize * (m_camera_width + 2));
-            tmp.Transparent = true;
-            Rectangle destRect,srcRect;
-            for (int y = 0; y < m_camera_width+2; y++) {
-                for (int x = 0; x < m_camera_width+2; x++) {
-                    if (layer[x+CameraLeft,y+CameraTop] != 0) {
-                        srcRect = m_TileSet.GetTile(layer[x + CameraLeft, y + CameraTop]);
+        private void ReDrawLayer(int[,] layer, Surface surface) {
+            surface.Fill(Color.Purple);
+            surface.Transparent = true;
+            surface.TransparentColor = Color.Purple;
+
+            Rectangle destRect, srcRect;
+            for (int y = 0; y < m_MapHeight; y++) {
+                for (int x = 0; x < m_MapWidth; x++) {
+                    if (layer[x, y] != 0) {
+                        srcRect = m_TileSet.GetTile(layer[x, y]);
                         destRect = new Rectangle(x * m_TileSize, y * m_TileSize, m_TileSize, m_TileSize);
-                        tmp.Blit(m_TileSet.m_tilemap.Surface, destRect, srcRect);
+                        surface.Blit(m_TileSet.m_tilemap.Surface, destRect, srcRect);
                     }
                 }
             }
-            m_surface.Blit(tmp, m_surface.Rectangle, m_camera);
-            tmp.Dispose();
         }
-        private void DrawActors(int CamLeft, int CamTop) {
+        private void DrawLayer(int[,] layer,Surface buffer) {
+            m_surface.Blit(buffer, m_surface.Rectangle, m_camera);
+        }
+        private void DrawActors() {
+            int CamLeft = m_camera.X / m_TileSize;
+            int CamTop = m_camera.Y / m_TileSize;
             int left, top;
-            Rectangle m_world = new Rectangle(CamLeft * m_TileSize, CamTop * m_TileSize, m_camera_width * m_TileSize, m_camera_height * m_TileSize);
-
             //Draw Avatar
-            m_avatar.Draw(m_surface, m_world, m_camera);
+            m_avatar.Draw(m_surface, m_camera);
 
             //Draw Avatar Weapons
             foreach (CActor actor in m_avatar_weapons) {
@@ -291,7 +306,7 @@ namespace Murasaki {
                 top = actor.Top / m_TileSize;
                 if (left >= CamLeft && left < CamLeft + m_camera_width &&
                     top >= CamTop && top < CamTop + m_camera_width) {
-                    actor.Draw(m_surface, m_world, m_camera);
+                    actor.Draw(m_surface, m_camera);
                 }
             }
 
@@ -301,7 +316,7 @@ namespace Murasaki {
                 top = actor.Top / m_TileSize;
                 if (left >= CamLeft && left < CamLeft + m_camera_width &&
                     top >= CamTop && top < CamTop + m_camera_width) {
-                    actor.Draw(m_surface,m_world, m_camera);
+                    actor.Draw(m_surface,m_camera);
                 }
             }
 
@@ -311,31 +326,19 @@ namespace Murasaki {
                 top = actor.Top / m_TileSize;
                 if (left >= CamLeft && left < CamLeft + m_camera_width &&
                     top >= CamTop && top < CamTop + m_camera_width) {
-                    actor.Draw(m_surface, m_world, m_camera);
+                    actor.Draw(m_surface, m_camera);
                 }
             }
         }
         public void Draw(Surface dest,Rectangle size) {
-            int camx, camy,playx, playy;
-
-            playx = (m_avatar.Left / m_TileSize);
-            playy = (m_avatar.Top / m_TileSize);
-            camy = playy - m_camera_halfwidth;
-            camx = playx - m_camera_halfwidth;
-
-            if (camx < 0)
-                camx = 0;
-            if (camy < 0)
-                camy = 0;
-
-            m_camera.X = (m_avatar.Left + (m_avatar.Width / 2) - (m_camera_halfwidth * m_TileSize)) - (camx * m_TileSize);
-            m_camera.Y = (m_avatar.Top + (m_avatar.Height / 2) - (m_camera_halfheight * m_TileSize)) - (camy * m_TileSize);
-
+            m_camera.X = m_avatar.Left + (m_avatar.Width / 2) - (m_camera_halfwidth * m_TileSize);
+            m_camera.Y = m_avatar.Top + (m_avatar.Height / 2) - (m_camera_halfheight * m_TileSize);
+            
             m_surface.Fill(Color.Black);
-            DrawLayer(m_MapBase, camx, camy);
-            DrawLayer(m_MapColide, camx, camy);
-            DrawActors(camx,camy);
-            DrawLayer(m_MapDetail, camx, camy);
+            DrawLayer(m_MapBase, b_MapBase);
+            DrawLayer(m_MapColide, b_MapColide);
+            DrawActors();
+            DrawLayer(m_MapDetail, b_MapDetail);
             dest.Blit(m_surface, size);
         }
         private void movePlayer(int x, int  y) {

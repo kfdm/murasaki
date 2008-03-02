@@ -9,6 +9,7 @@ namespace Murasaki {
         const string START_MAP = "Data/Start.map";
         private static CPlayState m_PlayState;
         private static CTileMap m_CurrentMap;
+        private Random m_rand;
         public override void OnKeyboardDown(CGameEngine game, KeyboardEventArgs e) {
             Console.WriteLine("CPlayState OnKeyboardDown");
             switch (e.Key) {
@@ -32,7 +33,8 @@ namespace Murasaki {
                     Video.Screen.SaveBmp("screenshot.bmp");
                     break;
                 case Key.Backspace:
-                    m_CurrentMap.Actors.AddLast(new CActorCivilian("data/pink.png", 26, 13, 24));
+                    for (int i = 0; i < 10; i++)
+                        m_CurrentMap.Actors.AddLast(new CActorCivilian("data/pink.png", 26, 13, 24, m_rand));
                     break;
                 case Key.Space:
                     CActorBullet tmp = new CActorBullet("Data/bullet.png");
@@ -80,6 +82,7 @@ namespace Murasaki {
         }
         public override void Init() {
             m_CurrentMap = new CTileMap(START_MAP);
+            m_rand = new Random(DateTime.Now.Millisecond);
         }
         public void ChangeMap(CTileMap map) {
             m_CurrentMap = map;

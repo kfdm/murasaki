@@ -46,7 +46,7 @@ namespace Murasaki {
         public int Width {
             get { return m_rect.Width; }
         }
-        public virtual void Draw(Surface dest, Rectangle World, Rectangle Camera) {
+        public virtual void Draw(Surface dest, Rectangle Camera) {
             Rectangle srcRect = new Rectangle(0, m_rect.Height * 2, m_rect.Width, m_rect.Height);
             switch (m_direction) {
                 case Key.UpArrow:
@@ -64,8 +64,8 @@ namespace Murasaki {
             }
             srcRect.X = m_rect.Width * m_walkanim;
 
-            Camera.X = m_rect.X - World.X - Camera.X;
-            Camera.Y = m_rect.Y - World.Y - Camera.Y;
+            Camera.X = m_rect.X - Camera.X;
+            Camera.Y = m_rect.Y - Camera.Y;
             Camera.Width = m_rect.Width;
             Camera.Height = m_rect.Height;
 

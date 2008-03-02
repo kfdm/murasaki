@@ -24,9 +24,9 @@ namespace Murasaki {
         public override void CollideWall() {
             
         }
-        public override void Draw(Surface dest, Rectangle World, Rectangle Camera) {
-            Camera.X = m_rect.X - World.X - Camera.X;
-            Camera.Y = m_rect.Y - World.Y - Camera.Y;
+        public override void Draw(Surface dest, Rectangle Camera) {
+            Camera.X = m_rect.X - Camera.X;
+            Camera.Y = m_rect.Y - Camera.Y;
             Camera.Width = m_rect.Width;
             Camera.Height = m_rect.Height;
 
