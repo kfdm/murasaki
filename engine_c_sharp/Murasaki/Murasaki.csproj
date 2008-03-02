@@ -6,7 +6,7 @@
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A83BC67F-5175-4901-A1AB-C5E1E4107B5A}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Murasaki</RootNamespace>
     <AssemblyName>Murasaki</AssemblyName>
@@ -32,6 +32,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -62,6 +63,9 @@
     <Compile Include="src\actors\CActorCivilian.cs" />
     <Compile Include="src\actors\CActorPlayer.cs" />
     <Compile Include="src\actors\CActorBullet.cs" />
+    <Compile Include="src\entities\CEntity.cs" />
+    <Compile Include="src\entities\CEntityMonsterSpawn.cs" />
+    <Compile Include="src\entities\CEntityTransition.cs" />
     <Compile Include="src\map\CMap.cs" />
     <Compile Include="src\states\CPlayState.cs" />
     <Compile Include="src\states\CIntroState.cs" />

@@ -81,6 +81,9 @@ namespace Murasaki {
         public override void Init() {
             m_CurrentMap = new CTileMap(START_MAP);
         }
+        public void ChangeMap(CTileMap map) {
+            m_CurrentMap = map;
+        }
         public override void Draw(CGameEngine game) {
             Video.Screen.Fill(Color.White);
             m_CurrentMap.Draw(Video.Screen,Video.Screen.Rectangle);

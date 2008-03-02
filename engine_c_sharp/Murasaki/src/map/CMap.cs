@@ -14,7 +14,7 @@ namespace Murasaki {
         public CActorPlayer Avatar { get { return m_avatar; } }
         public LinkedList<CActor> Weapons { get { return m_avatar_weapons; } }
         public LinkedList<CActor> Actors { get { return m_actors; } }
-        public Dictionary<String,CActor> Entities { get { return m_entities; } } 
+        public LinkedList<CEntity> Entities { get { return m_entities; } } 
 
         private CTileSet m_TileSet;
         private int m_MapHeight, m_MapWidth;
@@ -31,22 +31,20 @@ namespace Murasaki {
 
         private CActorPlayer m_avatar;
         private LinkedList<CActor> m_actors, m_actor_weapons, m_avatar_weapons;
-        private Dictionary<String,CActor> m_entities;
+        private LinkedList<CEntity> m_entities;
 
         public CTileMap(string filename,int playerx, int playery) : this(filename) {
             movePlayer(playerx, playery);
         }
         public CTileMap(string filename) {
-            LoadAvatar("Data/avatar.png");
-            LoadMap("Data/test.tmx");
-
-            m_actors=new LinkedList<CActor>();
+            m_actors = new LinkedList<CActor>();
             m_actor_weapons = new LinkedList<CActor>();
             m_avatar_weapons = new LinkedList<CActor>();
-            m_actors.AddLast( new CActorCivilian("data/pink.png",26,13,m_TileSize));
-
-            m_entities = new Dictionary<String,CActor>();
-
+            m_entities = new LinkedList<CEntity>();
+            
+            LoadAvatar("Data/avatar.png");
+            LoadMap("Data/test.tmx");
+            
             m_surface = new Surface(m_camera_width * m_TileSize, m_camera_height * m_TileSize);
             m_camera = new Rectangle(0, 0, m_camera_width * m_TileSize, m_camera_height * m_TileSize);
             Video.SetVideoMode(m_camera_width * m_TileSize, m_camera_height * m_TileSize);
@@ -166,7 +164,14 @@ namespace Murasaki {
         private void LoadMapObjectgroup(XmlNode objectgroup) {
             foreach (XmlNode entity in objectgroup.ChildNodes) {
                 XmlAttributeCollection attr = entity.Attributes;
+                XmlNodeList properties = entity.FirstChild.ChildNodes;
                 switch (attr["type"].Value) {
+                    case "CEntityTransition":
+                        m_entities.AddLast(new CEntityTransition(this, attr, properties));
+                        break;
+                    case "CEntityMonsterSpawn":
+                        CEntityMonsterSpawn tmp = new CEntityMonsterSpawn(this, attr, properties);
+                        break;
                     default:
                         Console.WriteLine("Unknown Entity Type {0} in LoadMapObjectgroup()", attr["type"].Value);
                         break;
@@ -206,7 +211,11 @@ namespace Murasaki {
                 UpdateActorColide(actor,toRemoveWeapons);
             }
 
-
+            //Update Entities
+            foreach (CEntity entity in m_entities) {
+                if (entity.Rectangle.IntersectsWith(m_avatar.Rectangle))
+                    entity.CollidePlayer();
+            }
             
         }
         private void UpdateActorColide(CActor actor,List<CActor> toRemove) {
