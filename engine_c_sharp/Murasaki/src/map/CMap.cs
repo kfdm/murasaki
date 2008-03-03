@@ -24,7 +24,7 @@ namespace Murasaki.Map {
         #region Private
         private CTileSet m_TileSet;
         private int m_MapHeight, m_MapWidth, m_TileSize;
-        private CMapLayer m_MapBase,m_MapDetail,m_MapColide;
+        private CMapLayer m_MapBase, m_MapDetail, m_MapCollide, m_MapClip;
 
         private Rectangle m_camera;
         private const int m_camera_width = 25;
@@ -122,8 +122,11 @@ namespace Murasaki.Map {
                 case "Base":
                     m_MapBase = new CMapLayer(currentlayer, m_MapWidth, m_MapHeight, m_TileSet);
                     break;
-                case "Colide":
-                    m_MapColide = new CMapLayer(currentlayer, m_MapWidth, m_MapHeight, m_TileSet);
+                case "Collide":
+                    m_MapCollide = new CMapLayer(currentlayer, m_MapWidth, m_MapHeight, m_TileSet);
+                    break;
+                case "Clip":
+                    m_MapClip = new CMapLayer(currentlayer, m_MapWidth, m_MapHeight);
                     break;
                 case "Detail":
                     m_MapDetail = new CMapLayer(currentlayer, m_MapWidth, m_MapHeight, m_TileSet);
@@ -201,12 +204,13 @@ namespace Murasaki.Map {
 
             //Update Avatar
             m_avatar.Update();
-            UpdateActorColide(m_avatar, toRemoveWeapons);
+            UpdateActorCollide(m_avatar, toRemoveWeapons, m_MapCollide);
+            UpdateActorCollide(m_avatar, toRemoveWeapons, m_MapClip);
 
             //Update Avatar Weapons
             foreach (CActor weapon in m_avatar_weapons) {
                 weapon.Update();
-                UpdateActorColide(weapon, toRemoveWeapons);
+                UpdateActorCollide(weapon, toRemoveWeapons, m_MapCollide);
                 foreach(CActor actor in m_actors) {
                     if (weapon.Rectangle.IntersectsWith(actor.Rectangle)) {
                         Console.WriteLine("Hit Actor");
@@ -225,7 +229,8 @@ namespace Murasaki.Map {
             //Update Actors
             foreach (CActor actor in m_actors) {
                 actor.Update();
-                UpdateActorColide(actor,toRemoveWeapons);
+                UpdateActorCollide(actor, toRemoveWeapons, m_MapCollide);
+                UpdateActorCollide(actor, toRemoveWeapons, m_MapClip);
             }
 
             //Update Entities
@@ -235,7 +240,7 @@ namespace Murasaki.Map {
             }
             
         }
-        private void UpdateActorColide(CActor actor,List<CActor> toRemove) {
+        private void UpdateActorCollide(CActor actor,List<CActor> toRemove,CMapLayer layer) {
             int top, bottom, left, right;
             bool collide = false;
             top = actor.Top / m_TileSize;
@@ -245,29 +250,28 @@ namespace Murasaki.Map {
 
             if (actor.moveup || actor.movedown || actor.moveleft || actor.moveright) {
                 //Top
-                m_MapColide.Collide(left, top);
-                if (m_MapColide.Collide(left, top) && m_MapColide.Collide(right, top)) {
+                if (layer.Collide(left, top) && layer.Collide(right, top)) {
                     actor.Top = (top + 1) * m_TileSize;
                     top = actor.Top / m_TileSize;
                     bottom = actor.Bottom / m_TileSize;
                     collide = true;
                 }
                 //Bottom
-                if (m_MapColide.Collide(left, bottom) && m_MapColide.Collide(right, bottom)) {
+                if (layer.Collide(left, bottom) && layer.Collide(right, bottom)) {
                     actor.Bottom = (bottom * m_TileSize) - 1;
                     top = actor.Top / m_TileSize;
                     bottom = actor.Bottom / m_TileSize;
                     collide = true;
                 }
                 //Left
-                if (m_MapColide.Collide(left, top) && m_MapColide.Collide(left, bottom)) {
+                if (layer.Collide(left, top) && layer.Collide(left, bottom)) {
                     actor.Left = (left + 1) * m_TileSize;
                     left = actor.Left / m_TileSize;
                     right = actor.Right / m_TileSize;
                     collide = true;
                 }
                 //Right
-                if (m_MapColide.Collide(right, top) && m_MapColide.Collide(right, bottom)) {
+                if (layer.Collide(right, top) && layer.Collide(right, bottom)) {
                     actor.Right = (right * m_TileSize) - 1;
                     left = actor.Left / m_TileSize;
                     right = actor.Right / m_TileSize;
@@ -327,8 +331,8 @@ namespace Murasaki.Map {
             m_surface.Fill(Color.Black);
             
             m_MapBase.Draw(m_surface, m_camera);
-            m_MapColide.Draw(m_surface, m_camera);
             DrawActors();
+            m_MapCollide.Draw(m_surface, m_camera);
             m_MapDetail.Draw(m_surface, m_camera);
 
             dest.Blit(m_surface, size);

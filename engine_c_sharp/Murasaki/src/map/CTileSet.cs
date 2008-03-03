@@ -9,8 +9,9 @@ using System.Drawing;
 namespace Murasaki.Map {
     public class CTileSet {
         private int m_numx, m_numy,m_tilesize;
-        public Sprite m_tilemap;
+        private Sprite m_tilemap;
 
+        public Surface Surface { get { return m_tilemap.Surface; } }
         public int TileSize { get { return m_tilesize; } }
 
         public CTileSet(string filename) : this(filename, 24, Color.FromArgb(255, 0, 255)) { }

@@ -14,21 +14,28 @@ namespace Murasaki.Map {
         private Rectangle m_size;
         private CTileSet m_tileset;
         private int m_tilesize;
+        private bool m_collideonly;
 
         public Rectangle Rectangle { get { return m_size; } }
         public int Height { get { return m_size.Height; } }
         public int Width { get { return m_size.Width; } }
 
         ~CMapLayer() {
-            m_surface.Dispose();
+            if(!m_collideonly)
+                m_surface.Dispose();
+        }
+        public CMapLayer(int[,] layer, int width, int height) {
+            m_collideonly = true;
+            m_layer = layer;
+            m_size = new Rectangle(0, 0, width, height);
         }
         public CMapLayer(int[,] layer, int width, int height, CTileSet tileset) {
+            m_collideonly = false;
             m_layer = layer;
             m_tileset = tileset;
             m_tilesize = m_tileset.TileSize;
             m_size = new Rectangle(0, 0, width, height);
             m_surface = new Surface(width * tileset.TileSize, height * tileset.TileSize);
-
             ReDraw();
         }
         public bool Collide(int x, int y) {
@@ -37,6 +44,8 @@ namespace Murasaki.Map {
             return true;
         }
         public void Draw(Surface dest, Rectangle camera) {
+            if (m_collideonly)
+                throw new Exception("Tried to draw a collision layer");
             Rectangle destRect = new Rectangle(0, 0, camera.Width, camera.Height);
             dest.Blit(m_surface, destRect, camera);
         }
@@ -51,7 +60,7 @@ namespace Murasaki.Map {
                     if (m_layer[x, y] != 0) {
                         srcRect = m_tileset.GetTile(m_layer[x, y]);
                         destRect = new Rectangle(x * m_tilesize, y * m_tilesize, m_tilesize, m_tilesize);
-                        m_surface.Blit(m_tileset.m_tilemap.Surface, destRect, srcRect);
+                        m_surface.Blit(m_tileset.Surface, destRect, srcRect);
                     }
                 }
             }
