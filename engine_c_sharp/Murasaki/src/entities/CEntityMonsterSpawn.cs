@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Xml;
 using System.Collections.Generic;
-using System.Text;
-
 using Murasaki.Actors;
 using Murasaki.Map;
 

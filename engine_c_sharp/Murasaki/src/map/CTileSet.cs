@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SdlDotNet.Core;
-using SdlDotNet.Graphics;
+﻿using SdlDotNet.Graphics;
 using SdlDotNet.Graphics.Sprites;
 using System.Drawing;
 

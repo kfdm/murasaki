@@ -1,5 +1,4 @@
-﻿using System;
-using SdlDotNet.Core;
+﻿using SdlDotNet.Core;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
 

@@ -3,7 +3,6 @@ using System.Collections;
 using SdlDotNet.Core;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
-
 using Murasaki.State;
 
 namespace Murasaki  {

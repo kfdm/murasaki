@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Xml;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using SdlDotNet.Core;
-using SdlDotNet.Input;
 using SdlDotNet.Graphics;
-using SdlDotNet.Graphics.Sprites;
 using System.Drawing;
-
 using Murasaki.Actors;
 using Murasaki.Entitys;
 

@@ -1,7 +1,4 @@
-﻿using System;
-using SdlDotNet.Core;
-using SdlDotNet.Graphics;
-using SdlDotNet.Input;
+﻿using SdlDotNet.Input;
 
 namespace Murasaki.State {
     public abstract class CGameState {

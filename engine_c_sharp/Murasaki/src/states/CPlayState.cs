@@ -3,7 +3,6 @@ using SdlDotNet.Core;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
 using System.Drawing;
-
 using Murasaki.Actors;
 using Murasaki.Map;
 
