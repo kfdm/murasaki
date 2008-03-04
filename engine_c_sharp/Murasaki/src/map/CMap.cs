@@ -121,6 +121,7 @@ namespace Murasaki.Map {
                     break;
                 case "Clip":
                     m_MapClip = new CMapLayer(currentlayer, m_MapWidth, m_MapHeight);
+                    m_MapClip.MergeLayer(m_MapCollide.Layer, m_MapWidth, m_MapHeight);
                     break;
                 case "Detail":
                     m_MapDetail = new CMapLayer(currentlayer, m_MapWidth, m_MapHeight, m_TileSet);
@@ -198,7 +199,6 @@ namespace Murasaki.Map {
 
             //Update Avatar
             m_avatar.Update();
-            UpdateActorCollide(m_avatar, toRemoveWeapons, m_MapCollide);
             UpdateActorCollide(m_avatar, toRemoveWeapons, m_MapClip);
 
             //Update Avatar Weapons
@@ -223,7 +223,6 @@ namespace Murasaki.Map {
             //Update Actors
             foreach (CActor actor in m_actors) {
                 actor.Update();
-                UpdateActorCollide(actor, toRemoveActors, m_MapCollide);
                 UpdateActorCollide(actor, toRemoveActors, m_MapClip);
             }
 

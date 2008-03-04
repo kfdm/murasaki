@@ -14,6 +14,7 @@ namespace Murasaki.Map {
         public Rectangle Rectangle { get { return m_size; } }
         public int Height { get { return m_size.Height; } }
         public int Width { get { return m_size.Width; } }
+        public int[,] Layer { get { return m_layer; } }
 
         ~CMapLayer() {
             if(!m_collideonly)
@@ -32,6 +33,14 @@ namespace Murasaki.Map {
             m_size = new Rectangle(0, 0, width, height);
             m_surface = new Surface(width * tileset.TileSize, height * tileset.TileSize);
             ReDraw();
+        }
+        public void MergeLayer(int[,] layer, int width, int height) {
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    if (layer[x, y] != 0)
+                        m_layer[x, y] = layer[x, y];
+                }
+            }
         }
         public bool Collide(int x, int y) {
             if (m_layer[x, y] == 0)
