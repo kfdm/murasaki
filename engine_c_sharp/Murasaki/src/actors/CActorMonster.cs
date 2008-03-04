@@ -63,5 +63,10 @@ namespace Murasaki.Actors {
         public override void CollideWall(List<CActor> toRemove) {
             CheckDirection();
         }
+        public override void GotHit(CActor hitby, List<CActor> toRemove, List<CActor> toRemoveWeapon) {
+            Console.WriteLine("Hit Monster");
+            toRemove.Add(this);
+            toRemoveWeapon.Add(hitby);
+        }
     }
 }

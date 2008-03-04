@@ -68,15 +68,24 @@ namespace Murasaki.Map {
             nodes = xml.SelectNodes("map");
             foreach (XmlNode map in nodes)
                 LoadMapInfo(map);
+            
+            //Load Map Properties
             nodes = xml.SelectNodes("map/properties");
             foreach (XmlNode properties in nodes)
                 LoadMapProperties(properties);
+            
+            //Load Tilesets
             nodes = xml.SelectNodes("map/tileset");
             foreach (XmlNode tileset in nodes)
                 LoadMapTileset(tileset);
+            
+            //Load Map Layers
             nodes = xml.SelectNodes("map/layer");
             foreach (XmlNode layer in nodes)
                 LoadMapLayer(layer);
+            m_MapClip.MergeLayer(m_MapCollide.Layer, m_MapWidth, m_MapHeight);
+
+            //Load Entities
             nodes = xml.SelectNodes("map/objectgroup");
             foreach (XmlNode objectgroup in nodes)
                 LoadMapObjectgroup(objectgroup);
@@ -120,8 +129,7 @@ namespace Murasaki.Map {
                     m_MapCollide = new CMapLayer(currentlayer, m_MapWidth, m_MapHeight, m_TileSet);
                     break;
                 case "Clip":
-                    m_MapClip = new CMapLayer(currentlayer, m_MapWidth, m_MapHeight);
-                    m_MapClip.MergeLayer(m_MapCollide.Layer, m_MapWidth, m_MapHeight);
+                    m_MapClip = new CMapLayer(currentlayer, m_MapWidth, m_MapHeight,m_TileSize);
                     break;
                 case "Detail":
                     m_MapDetail = new CMapLayer(currentlayer, m_MapWidth, m_MapHeight, m_TileSet);
@@ -199,17 +207,15 @@ namespace Murasaki.Map {
 
             //Update Avatar
             m_avatar.Update();
-            UpdateActorCollide(m_avatar, toRemoveWeapons, m_MapClip);
+            m_MapClip.Collide(m_avatar,toRemoveActors);
 
             //Update Avatar Weapons
             foreach (CActor weapon in m_avatar_weapons) {
                 weapon.Update();
-                UpdateActorCollide(weapon, toRemoveWeapons, m_MapCollide);
+                m_MapCollide.Collide(weapon, toRemoveWeapons);
                 foreach(CActor actor in m_actors) {
                     if (weapon.Rectangle.IntersectsWith(actor.Rectangle)) {
-                        Console.WriteLine("Hit Actor");
-                        toRemoveWeapons.Add(weapon);
-                        toRemoveActors.Add(actor);
+                        actor.GotHit(weapon, toRemoveActors,toRemoveWeapons);
                     }
                 }
             }
@@ -223,7 +229,7 @@ namespace Murasaki.Map {
             //Update Actors
             foreach (CActor actor in m_actors) {
                 actor.Update();
-                UpdateActorCollide(actor, toRemoveActors, m_MapClip);
+                m_MapClip.Collide(actor, toRemoveActors);
             }
 
             //Update Entities
@@ -231,49 +237,8 @@ namespace Murasaki.Map {
                 if (entity.Rectangle.IntersectsWith(m_avatar.Rectangle))
                     entity.CollidePlayer();
             }
-            
-        }
-        private void UpdateActorCollide(CActor actor,List<CActor> toRemove,CMapLayer layer) {
-            int top, bottom, left, right;
-            bool collide = false;
-            top = actor.Top / m_TileSize;
-            bottom = actor.Bottom / m_TileSize;
-            left = actor.Left / m_TileSize;
-            right = actor.Right / m_TileSize;
-
-            if (actor.moveup || actor.movedown || actor.moveleft || actor.moveright) {
-                //Top
-                if (layer.Collide(left, top) && layer.Collide(right, top)) {
-                    actor.Top = (top + 1) * m_TileSize;
-                    top = actor.Top / m_TileSize;
-                    bottom = actor.Bottom / m_TileSize;
-                    collide = true;
-                }
-                //Bottom
-                if (layer.Collide(left, bottom) && layer.Collide(right, bottom)) {
-                    actor.Bottom = (bottom * m_TileSize) - 1;
-                    top = actor.Top / m_TileSize;
-                    bottom = actor.Bottom / m_TileSize;
-                    collide = true;
-                }
-                //Left
-                if (layer.Collide(left, top) && layer.Collide(left, bottom)) {
-                    actor.Left = (left + 1) * m_TileSize;
-                    left = actor.Left / m_TileSize;
-                    right = actor.Right / m_TileSize;
-                    collide = true;
-                }
-                //Right
-                if (layer.Collide(right, top) && layer.Collide(right, bottom)) {
-                    actor.Right = (right * m_TileSize) - 1;
-                    left = actor.Left / m_TileSize;
-                    right = actor.Right / m_TileSize;
-                    collide = true;
-                }
-            }
-            if (collide) {
-                 actor.CollideWall(toRemove);
-            }
+            foreach (CActor actor in toRemoveActors)
+                m_actors.Remove(actor);
         }
         #endregion
 

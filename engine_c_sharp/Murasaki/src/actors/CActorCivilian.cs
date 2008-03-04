@@ -69,6 +69,11 @@ namespace Murasaki.Actors {
                 m_walkdelay++;
             }
         }
+        public override void GotHit(CActor hitby, List<CActor> toRemove, List<CActor> toRemoveWeapon) {
+            Console.WriteLine("Hit Civilian");
+            toRemove.Add(this);
+            toRemoveWeapon.Add(hitby);
+        }
         public override void CollideWall(List<CActor> toRemove) {
             RandomDirection();
         }

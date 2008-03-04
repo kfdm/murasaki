@@ -67,6 +67,13 @@ namespace Murasaki.Actors {
 
             dest.Blit(m_tileset, Camera, srcRect);
         }
+        /// <summary>
+        /// Called when an actor is hit by another actor
+        /// </summary>
+        /// <param name="hitby">Actor that hit the current actor</param>
+        /// <param name="toRemoveSelf">List to remove the current actor</param>
+        /// <param name="toRemoveOther">List to remove the other actor</param>
+        public virtual void GotHit(CActor hitby, List<CActor> toRemoveSelf,List<CActor> toRemoveOther) { }
         public virtual void CollideWall(List<CActor> toRemove) {}
         public virtual void Update() {
             if (moveup)

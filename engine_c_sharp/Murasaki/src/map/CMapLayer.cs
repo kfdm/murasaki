@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using SdlDotNet.Graphics;
 using System.Drawing;
+using Murasaki.Actors;
 
 namespace Murasaki.Map {
     class CMapLayer {
@@ -20,10 +22,11 @@ namespace Murasaki.Map {
             if(!m_collideonly)
                 m_surface.Dispose();
         }
-        public CMapLayer(int[,] layer, int width, int height) {
+        public CMapLayer(int[,] layer, int width, int height, int tilesize) {
             m_collideonly = true;
             m_layer = layer;
             m_size = new Rectangle(0, 0, width, height);
+            m_tilesize = tilesize;
         }
         public CMapLayer(int[,] layer, int width, int height, CTileSet tileset) {
             m_collideonly = false;
@@ -46,6 +49,45 @@ namespace Murasaki.Map {
             if (m_layer[x, y] == 0)
                 return false;
             return true;
+        }
+        public void Collide(CActor actor,List<CActor> remove) {
+            int top, bottom, left, right;
+            bool collide = false;
+            top = actor.Top / m_tilesize;
+            bottom = actor.Bottom / m_tilesize;
+            left = actor.Left / m_tilesize;
+            right = actor.Right / m_tilesize;
+
+            //Top
+            if ((m_layer[left, top]!=0) && (m_layer[right, top]!=0)) {
+                actor.Top = (top + 1) * m_tilesize;
+                top = actor.Top / m_tilesize;
+                bottom = actor.Bottom / m_tilesize;
+                collide = true;
+            }
+            //Bottom
+            if ((m_layer[left, bottom]!=0) && (m_layer[right, bottom]!=0)) {
+                actor.Bottom = (bottom * m_tilesize) - 1;
+                top = actor.Top / m_tilesize;
+                bottom = actor.Bottom / m_tilesize;
+                collide = true;
+            }
+            //Left
+            if ((m_layer[left, top]!=0) && (m_layer[left, bottom]!=0)) {
+                actor.Left = (left + 1) * m_tilesize;
+                left = actor.Left / m_tilesize;
+                right = actor.Right / m_tilesize;
+                collide = true;
+            }
+            //Right
+            if ((m_layer[right, top] != 0) && (m_layer[right, bottom] != 0)) {
+                actor.Right = (right * m_tilesize) - 1;
+                left = actor.Left / m_tilesize;
+                right = actor.Right / m_tilesize;
+                collide = true;
+            }
+            if (collide)
+                actor.CollideWall(remove);
         }
         public void Draw(Surface dest, Rectangle camera) {
             if (m_collideonly)
