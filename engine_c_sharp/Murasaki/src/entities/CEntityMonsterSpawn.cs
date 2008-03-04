@@ -7,14 +7,20 @@ using Murasaki.Map;
 namespace Murasaki.Entitys {
     class CEntityMonsterSpawn : CEntity {
         public CEntityMonsterSpawn(CTileMap map, XmlAttributeCollection attributes, XmlNodeList properties) {
+            int x, y;
             Dictionary<string, string> props = new Dictionary<string, string>();
             foreach (XmlNode node in properties)
                 props.Add(node.Attributes["name"].Value, node.InnerText.Trim());
             switch (props["MonsterType"]) {
                 case "CActorCivilian":
-                    int x = Convert.ToInt16(props["X"]);
-                    int y = Convert.ToInt16(props["Y"]);
+                    x = Convert.ToInt16(props["X"]);
+                    y = Convert.ToInt16(props["Y"]);
                     map.Actors.AddLast(new CActorCivilian("data/pink.png", x, y, 24));
+                    break;
+                case "CActorMonster":
+                    x = Convert.ToInt16(props["X"]);
+                    y = Convert.ToInt16(props["Y"]);
+                    map.Actors.AddLast(new CActorMonster("data/pink.png", x, y, 24,map.Avatar));
                     break;
             }
         }

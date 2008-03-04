@@ -223,8 +223,8 @@ namespace Murasaki.Map {
             //Update Actors
             foreach (CActor actor in m_actors) {
                 actor.Update();
-                UpdateActorCollide(actor, toRemoveWeapons, m_MapCollide);
-                UpdateActorCollide(actor, toRemoveWeapons, m_MapClip);
+                UpdateActorCollide(actor, toRemoveActors, m_MapCollide);
+                UpdateActorCollide(actor, toRemoveActors, m_MapClip);
             }
 
             //Update Entities
@@ -273,9 +273,7 @@ namespace Murasaki.Map {
                 }
             }
             if (collide) {
-                if (actor is CActorBullet)
-                    toRemove.Add(actor);
-                actor.CollideWall();
+                 actor.CollideWall(toRemove);
             }
         }
         #endregion

@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="src\actors\CActor.cs" />
     <Compile Include="src\actors\CActorCivilian.cs" />
+    <Compile Include="src\actors\CActorMonster.cs" />
     <Compile Include="src\actors\CActorPlayer.cs" />
     <Compile Include="src\actors\CActorBullet.cs" />
     <Compile Include="src\entities\CEntity.cs" />
@@ -86,6 +87,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\sewer_tileset.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\white.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

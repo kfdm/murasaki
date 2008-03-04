@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
 
@@ -15,7 +16,7 @@ namespace Murasaki.Actors {
         protected bool m_moveup, m_movedown, m_moveright, m_moveleft;
         protected int m_movespeed;
         protected Key m_direction = Key.UpArrow;
-        protected int m_walkanim = 0, m_walkanim2 = 0;
+        protected int m_walkframe = 0, m_walkdelay = 0;
 
         protected Surface m_tileset;
         protected Rectangle m_rect;
@@ -57,7 +58,7 @@ namespace Murasaki.Actors {
                     srcRect.Y = m_rect.Height;
                     break;
             }
-            srcRect.X = m_rect.Width * m_walkanim;
+            srcRect.X = m_rect.Width * m_walkframe;
 
             Camera.X = m_rect.X - Camera.X;
             Camera.Y = m_rect.Y - Camera.Y;
@@ -66,7 +67,7 @@ namespace Murasaki.Actors {
 
             dest.Blit(m_tileset, Camera, srcRect);
         }
-        public virtual void CollideWall() { }
+        public virtual void CollideWall(List<CActor> toRemove) {}
         public virtual void Update() {
             if (moveup)
                 Top -= movespeed;
@@ -77,11 +78,11 @@ namespace Murasaki.Actors {
             if (moveright)
                 Left += movespeed;
             if (moveup || movedown || moveleft || moveright) {
-                if (m_walkanim2 > 10) {
-                    m_walkanim2 = 0;
-                    m_walkanim = (m_walkanim + 1) % 3;
+                if (m_walkdelay > 10) {
+                    m_walkdelay = 0;
+                    m_walkframe = (m_walkframe + 1) % 3;
                 }
-                m_walkanim2++;
+                m_walkdelay++;
             }
         }
     }

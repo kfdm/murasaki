@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
@@ -61,14 +62,14 @@ namespace Murasaki.Actors {
                 (m_direction==Key.DownArrow) ||
                 (m_direction==Key.LeftArrow) ||
                 (m_direction==Key.RightArrow)) {
-                if (m_walkanim2 > 10) {
-                    m_walkanim2 = 0;
-                    m_walkanim = (m_walkanim + 1) % 3;
+                if (m_walkdelay > 10) {
+                    m_walkdelay = 0;
+                    m_walkframe = (m_walkframe + 1) % 3;
                 }
-                m_walkanim2++;
+                m_walkdelay++;
             }
         }
-        public override void CollideWall() {
+        public override void CollideWall(List<CActor> toRemove) {
             RandomDirection();
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
 
@@ -16,8 +17,8 @@ namespace Murasaki.Actors {
         ~CActorBullet() {
             m_tileset.Dispose();
         }
-        public override void CollideWall() {
-            
+        public override void CollideWall(List<CActor> toRemove) {
+            toRemove.Add(this);
         }
         public override void Draw(Surface dest, Rectangle Camera) {
             Camera.X = m_rect.X - Camera.X;
