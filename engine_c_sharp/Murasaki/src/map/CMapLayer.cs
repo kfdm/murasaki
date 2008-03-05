@@ -58,6 +58,12 @@ namespace Murasaki.Map {
             left = actor.Left / m_tilesize;
             right = actor.Right / m_tilesize;
 
+            //Out of the world
+            if (top < 0 || top > m_size.Height || left < 0 || left > m_size.Width) {
+                remove.Add(actor);
+                return;
+            }
+
             //Top
             if ((m_layer[left, top]!=0) && (m_layer[right, top]!=0)) {
                 actor.Top = (top + 1) * m_tilesize;
