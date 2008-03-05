@@ -34,5 +34,9 @@ namespace Murasaki.Actors {
             if (moveright)
                 m_direction = Key.RightArrow;
         }
+        public override void GotHit(CActor hitby, System.Collections.Generic.List<CActor> toRemoveSelf, System.Collections.Generic.List<CActor> toRemoveOther) {
+            System.Console.WriteLine("Got Hit!");
+            toRemoveOther.Add(hitby);
+        }
     }
 }

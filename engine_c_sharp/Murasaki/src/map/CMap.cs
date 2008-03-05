@@ -11,10 +11,12 @@ namespace Murasaki.Map {
         #region Properties
         public CActorPlayer Avatar { get { return m_avatar; } }
         public LinkedList<CActor> Weapons { get { return m_avatar_weapons; } }
+        public LinkedList<CActor> EnemyWeapons { get { return m_actor_weapons; } }
         public LinkedList<CActor> Actors { get { return m_actors; } }
         public LinkedList<CEntity> Entities { get { return m_entities; } }
         public int TileSize { get { return m_TileSize; } }
         public Random RandomGenerator { get { return m_rand; } }
+        public Rectangle Camera { get { return m_camera; } }
         #endregion
 
         #region Private
@@ -236,6 +238,17 @@ namespace Murasaki.Map {
                 actor.Update();
                 m_MapClip.Collide(actor, toRemoveActors);
             }
+
+            //Update Actor Weapons
+            foreach (CActor weapon in m_actor_weapons) {
+                weapon.Update();
+                m_MapCollide.Collide(weapon,toRemoveWeapons);
+                if(weapon.Rectangle.IntersectsWith(m_avatar.Rectangle)) {
+                    m_avatar.GotHit(weapon,toRemoveActors,toRemoveWeapons);
+                }
+            }
+            foreach (CActor weapon in toRemoveWeapons)
+                m_actor_weapons.Remove(weapon);
 
             //Update Entities
             foreach (CEntity entity in m_entities) {

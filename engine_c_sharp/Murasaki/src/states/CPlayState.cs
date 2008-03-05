@@ -38,8 +38,8 @@ namespace Murasaki.State {
                     m_CurrentMap.Actors.AddLast(new CActorMonster(m_CurrentMap,15,15));
                     break;
                 case Key.Space:
-                    int top = m_CurrentMap.Avatar.Top / m_CurrentMap.TileSize;
-                    int left = m_CurrentMap.Avatar.Left / m_CurrentMap.TileSize;
+                    int top = m_CurrentMap.Avatar.Top;
+                    int left = m_CurrentMap.Avatar.Left;
                     m_CurrentMap.Weapons.AddLast(new CActorBullet(m_CurrentMap, left, top, m_CurrentMap.Avatar.direction));
                     break;
             }

@@ -27,11 +27,11 @@ namespace Murasaki.Actors {
         /// 
         /// </summary>
         /// <param name="map"></param>
-        /// <param name="x">X Coord in Tile Units</param>
-        /// <param name="y">Y Coord in Tile Units</param>
+        /// <param name="x">X Coord in World Units</param>
+        /// <param name="y">Y Coord in World Units</param>
         public CActorBullet(CTileMap map,int x, int y) {
             m_tileset = new Surface("Data/bullet.png");
-            m_rect = new Rectangle(x * map.TileSize, y * map.TileSize, m_tileset.Width / 3, m_tileset.Height / 4);
+            m_rect = new Rectangle(x, y, m_tileset.Width / 3, m_tileset.Height / 4);
             m_tileset.Transparent = true;
             m_tileset.TransparentColor = Color.FromArgb(255, 0, 255);
             m_moveup = m_movedown = m_moveleft = m_moveright = false;
