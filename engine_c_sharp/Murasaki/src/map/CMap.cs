@@ -13,12 +13,15 @@ namespace Murasaki.Map {
         public LinkedList<CActor> Weapons { get { return m_avatar_weapons; } }
         public LinkedList<CActor> Actors { get { return m_actors; } }
         public LinkedList<CEntity> Entities { get { return m_entities; } }
+        public int TileSize { get { return m_TileSize; } }
+        public Random RandomGenerator { get { return m_rand; } }
         #endregion
 
         #region Private
         private CTileSet m_TileSet;
         private int m_MapHeight, m_MapWidth, m_TileSize;
         private CMapLayer m_MapBase, m_MapDetail, m_MapCollide, m_MapClip;
+        private Random m_rand;
 
         private Rectangle m_camera;
         private const int m_camera_width = 25;
@@ -49,6 +52,8 @@ namespace Murasaki.Map {
             m_camera = new Rectangle(0, 0, m_camera_width * m_TileSize, m_camera_height * m_TileSize);
             m_surface = new Surface(m_camera);
             Video.SetVideoMode(m_camera_width * m_TileSize, m_camera_height * m_TileSize);
+
+            m_rand = new Random(DateTime.Now.Millisecond);
         }
         ~CTileMap() {
             m_surface.Dispose();

@@ -2,15 +2,38 @@
 using System.Drawing;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
+using Murasaki.Map;
 
 namespace Murasaki.Actors {
     class CActorBullet : CActor{
-        public CActorBullet(string filename) {
-            m_tileset = new Surface(filename);
-            m_rect = new Rectangle(0, 0, m_tileset.Width / 3, m_tileset.Height / 4);
+        public CActorBullet(CTileMap map, int x, int y, Key direction)
+            : this(map, x, y) {
+            switch (direction) {
+                case Key.UpArrow:
+                    moveup = true;
+                    break;
+                case Key.DownArrow:
+                    movedown = true;
+                    break;
+                case Key.LeftArrow:
+                    moveleft = true;
+                    break;
+                case Key.RightArrow:
+                    moveright = true;
+                    break;
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="map"></param>
+        /// <param name="x">X Coord in Tile Units</param>
+        /// <param name="y">Y Coord in Tile Units</param>
+        public CActorBullet(CTileMap map,int x, int y) {
+            m_tileset = new Surface("Data/bullet.png");
+            m_rect = new Rectangle(x * map.TileSize, y * map.TileSize, m_tileset.Width / 3, m_tileset.Height / 4);
             m_tileset.Transparent = true;
             m_tileset.TransparentColor = Color.FromArgb(255, 0, 255);
-
             m_moveup = m_movedown = m_moveleft = m_moveright = false;
             m_movespeed = 5;
         }

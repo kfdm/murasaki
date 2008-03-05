@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
+using Murasaki.Map;
 
 namespace Murasaki.Actors {
     class CActorCivilian : CActor{
@@ -12,20 +13,20 @@ namespace Murasaki.Actors {
         public override bool moveright { get { return m_moveright; } set { m_moveright = value; m_direction = Key.RightArrow; } }
         private int ticks;
         private Random m_rand;
-        public CActorCivilian(string filename, int tilex, int tiley, int tilewidth, Random rand) : this(filename,tilex,tiley,tilewidth) {
-            m_rand = rand;
-        }
-        public CActorCivilian(string filename,int tilex, int tiley,int tilewidth) {
-            m_tileset = new Surface(filename);
-            m_rect = new Rectangle(tilex * tilewidth, tiley * tilewidth, m_tileset.Width / 3, m_tileset.Height / 4);
-
-            movedown = true;
-            movespeed = 2;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="map"></param>
+        /// <param name="x">X Coord in Tile Units</param>
+        /// <param name="y">Y Coord in Tile Units</param>
+        public CActorCivilian(CTileMap map, int x, int y) {
+            m_tileset = new Surface("data/pink.png");
             m_tileset.Transparent = true;
             m_tileset.TransparentColor = Color.FromArgb(255, 0, 255);
-
-            m_rand = new Random(DateTime.Now.Millisecond);
+            m_rect = new Rectangle(x * map.TileSize, y * map.TileSize, m_tileset.Width / 3, m_tileset.Height / 4);
+            movedown = true;
+            movespeed = 2;
+            m_rand = map.RandomGenerator;
         }
         ~CActorCivilian() {
             m_tileset.Dispose();

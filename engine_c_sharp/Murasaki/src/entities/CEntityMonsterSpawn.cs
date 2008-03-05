@@ -15,12 +15,12 @@ namespace Murasaki.Entitys {
                 case "CActorCivilian":
                     x = Convert.ToInt16(props["X"]);
                     y = Convert.ToInt16(props["Y"]);
-                    map.Actors.AddLast(new CActorCivilian("data/pink.png", x, y, 24));
+                    map.Actors.AddLast(new CActorCivilian(map, x, y));
                     break;
                 case "CActorMonster":
                     x = Convert.ToInt16(props["X"]);
                     y = Convert.ToInt16(props["Y"]);
-                    map.Actors.AddLast(new CActorMonster("data/pink.png", x, y, 24,map.Avatar));
+                    map.Actors.AddLast(new CActorMonster(map, x, y));
                     break;
             }
         }

@@ -11,7 +11,6 @@ namespace Murasaki.State {
         const string START_MAP = "test.tmx";
         private static CPlayState m_PlayState;
         private static CTileMap m_CurrentMap;
-        private Random m_rand;
         public override void OnKeyboardDown(CGameEngine game, KeyboardEventArgs e) {
             switch (e.Key) {
                 case Key.Escape:
@@ -35,27 +34,13 @@ namespace Murasaki.State {
                     break;
                 case Key.Backspace:
                     for (int i = 0; i < 10; i++)
-                        m_CurrentMap.Actors.AddLast(new CActorCivilian("data/pink.png", 26, 13, 24, m_rand));
+                        m_CurrentMap.Actors.AddLast(new CActorCivilian(m_CurrentMap, 26, 13));
+                    m_CurrentMap.Actors.AddLast(new CActorMonster(m_CurrentMap,15,15));
                     break;
                 case Key.Space:
-                    CActorBullet tmp = new CActorBullet("Data/bullet.png");
-                    tmp.Top = m_CurrentMap.Avatar.Top;
-                    tmp.Left = m_CurrentMap.Avatar.Left;
-                    switch (m_CurrentMap.Avatar.direction) {
-                        case Key.UpArrow:
-                            tmp.moveup = true;
-                            break;
-                        case Key.DownArrow:
-                            tmp.movedown = true;
-                            break;
-                        case Key.LeftArrow:
-                            tmp.moveleft = true;
-                            break;
-                        case Key.RightArrow:
-                            tmp.moveright = true;
-                            break;
-                    }
-                    m_CurrentMap.Weapons.AddLast(tmp);
+                    int top = m_CurrentMap.Avatar.Top / m_CurrentMap.TileSize;
+                    int left = m_CurrentMap.Avatar.Left / m_CurrentMap.TileSize;
+                    m_CurrentMap.Weapons.AddLast(new CActorBullet(m_CurrentMap, left, top, m_CurrentMap.Avatar.direction));
                     break;
             }
         }
@@ -82,7 +67,6 @@ namespace Murasaki.State {
         }
         public override void Init() {
             m_CurrentMap = new CTileMap(START_MAP);
-            m_rand = new Random(DateTime.Now.Millisecond);
         }
         public void ChangeMap(CTileMap map) {
             m_CurrentMap = map;

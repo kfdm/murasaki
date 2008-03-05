@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
+using Murasaki.Map;
 
 namespace Murasaki.Actors {
     class CActorMonster : CActor {
@@ -13,13 +14,19 @@ namespace Murasaki.Actors {
 
         private CActorPlayer m_player;
         private int ticks = 0;
-        public CActorMonster(string filename, int x, int y, int tilewidth,CActorPlayer player) {
+        /// <summary>
+        /// Create a new monster
+        /// </summary>
+        /// <param name="map">Reference to the map (to be able to load certain values)</param>
+        /// <param name="x">Starting X Coord in Tile units</param>
+        /// <param name="y">Starting Y Coord in Tile units</param>
+        public CActorMonster(CTileMap map, int x, int y) {
             m_tileset = new Surface("Data/white.png");
-            m_rect = new Rectangle(x * tilewidth, y * tilewidth, m_tileset.Width / 3, m_tileset.Height / 4);
+            m_rect = new Rectangle(x * map.TileSize, y * map.TileSize, m_tileset.Width / 3, m_tileset.Height / 4);
             movespeed = 1;
             m_tileset.Transparent = true;
             m_tileset.TransparentColor = Color.FromArgb(255, 0, 255);
-            m_player = player;
+            m_player = map.Avatar;
         }
         ~CActorMonster() {
             m_tileset.Dispose();
