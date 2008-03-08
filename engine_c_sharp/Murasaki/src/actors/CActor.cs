@@ -1,22 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using SdlDotNet.Graphics;
-using SdlDotNet.Input;
+using Murasaki.Map;
 
 namespace Murasaki.Actors {
+    public enum ActorDirection {Up, Down, Left, Right, Stop }
+
     public abstract class CActor {
-        public virtual bool moveup { get { return m_moveup; } set { m_moveup = value; m_direction = Key.UpArrow; } }
-        public virtual bool movedown { get { return m_movedown; } set { m_movedown = value; m_direction = Key.DownArrow; } }
-        public virtual bool moveleft { get { return m_moveleft; } set { m_moveleft = value; m_direction = Key.LeftArrow; } }
-        public virtual bool moveright { get { return m_moveright; } set { m_moveright = value; m_direction = Key.RightArrow; } }
+        public virtual bool moveup { get { return m_moveup; } set { m_moveup = value; m_direction = ActorDirection.Up; } }
+        public virtual bool movedown { get { return m_movedown; } set { m_movedown = value; m_direction = ActorDirection.Down; } }
+        public virtual bool moveleft { get { return m_moveleft; } set { m_moveleft = value; m_direction = ActorDirection.Left; } }
+        public virtual bool moveright { get { return m_moveright; } set { m_moveright = value; m_direction = ActorDirection.Right; } }
         public virtual Rectangle Rectangle { get { return m_rect; } }
         public virtual int movespeed { get { return m_movespeed; } set { m_movespeed = value; } }
-        public virtual Key direction { get { return m_direction; } }
+        public virtual ActorDirection direction { get { return m_direction; } }
+        public bool Collideable { get { return m_collidable; } set { m_collidable = value; } }
 
         protected bool m_moveup, m_movedown, m_moveright, m_moveleft;
         protected int m_movespeed;
-        protected Key m_direction = Key.UpArrow;
+        protected ActorDirection m_direction = ActorDirection.Up;
         protected int m_walkframe = 0, m_walkdelay = 0;
+        protected bool m_collidable;
+        protected CTileMap m_map;
 
         protected Surface m_tileset;
         protected Rectangle m_rect;
@@ -45,16 +50,16 @@ namespace Murasaki.Actors {
         public virtual void Draw(Surface dest, Rectangle Camera) {
             Rectangle srcRect = new Rectangle(0, m_rect.Height * 2, m_rect.Width, m_rect.Height);
             switch (m_direction) {
-                case Key.UpArrow:
+                case ActorDirection.Up:
                     srcRect.Y = 0;
                     break;
-                case Key.DownArrow:
+                case ActorDirection.Down:
                     srcRect.Y = m_rect.Height * 2;
                     break;
-                case Key.LeftArrow:
+                case ActorDirection.Left:
                     srcRect.Y = m_rect.Height * 3;
                     break;
-                case Key.RightArrow:
+                case ActorDirection.Right:
                     srcRect.Y = m_rect.Height;
                     break;
             }
@@ -75,21 +80,64 @@ namespace Murasaki.Actors {
         /// <param name="toRemoveOther">List to remove the other actor</param>
         public virtual void GotHit(CActor hitby, List<CActor> toRemoveSelf,List<CActor> toRemoveOther) { }
         public virtual void CollideWall(List<CActor> toRemove) {}
+        public virtual void ReverseMovement() {
+            if (m_moveup)
+                m_rect.Y += m_movespeed;
+            if (m_movedown)
+                m_rect.Y -= m_movespeed;
+            if (m_moveleft)
+                m_rect.X += m_movespeed;
+            if (m_moveright)
+                m_rect.X -= m_movespeed;
+        }
+        public virtual void ReverseMovement(ActorDirection direction) {
+            switch (direction) {
+                case ActorDirection.Up:
+                    m_rect.Y += m_movespeed;
+                    break;
+                case ActorDirection.Down:
+                    m_rect.Y -= m_movespeed;
+                    break;
+                case ActorDirection.Left:
+                    m_rect.X += m_movespeed;
+                    break;
+                case ActorDirection.Right:
+                    m_rect.X -= m_movespeed;
+                    break;
+            }
+        }
         public virtual void Update() {
-            if (moveup)
-                Top -= movespeed;
-            if (movedown)
-                Top += movespeed;
-            if (moveleft)
-                Left -= movespeed;
-            if (moveright)
-                Left += movespeed;
-            if (moveup || movedown || moveleft || moveright) {
+            //Move Actors
+            if (m_moveup)
+                m_rect.Y -= m_movespeed;
+            if (m_movedown)
+                m_rect.Y += m_movespeed;
+            if (m_moveleft)
+                m_rect.X -= m_movespeed;
+            if (m_moveright)
+                m_rect.X += m_movespeed;
+            //Update animation
+            if (m_moveup || m_movedown || m_moveleft || m_moveright) {
                 if (m_walkdelay > 10) {
                     m_walkdelay = 0;
                     m_walkframe = (m_walkframe + 1) % 3;
                 }
                 m_walkdelay++;
+            }
+            if (m_collidable) {
+                //Check to see if actors collided
+                foreach (CActor actor in m_map.Actors) {
+                    if (actor != this) {
+                        if (actor.Rectangle.IntersectsWith(m_rect)) {
+                            ReverseMovement();
+                        }
+                    }
+                }
+                //Colide with Avatar
+                if(!(this is CActorPlayer))
+                if (m_map.Avatar.Rectangle.IntersectsWith(m_rect)) {
+                    ReverseMovement();
+                }
             }
         }
     }

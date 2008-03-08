@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Drawing;
 using SdlDotNet.Graphics;
-using SdlDotNet.Input;
 using Murasaki.Map;
 
 namespace Murasaki.Actors {
     class CActorCivilian : CActor{
-        public override bool moveup { get { return m_moveup; } set { m_moveup = value; m_direction = Key.UpArrow; } }
-        public override bool movedown { get { return m_movedown; } set { m_movedown = value; m_direction = Key.DownArrow; } }
-        public override bool moveleft { get { return m_moveleft; } set { m_moveleft = value; m_direction = Key.LeftArrow; } }
-        public override bool moveright { get { return m_moveright; } set { m_moveright = value; m_direction = Key.RightArrow; } }
+        public override bool moveup { get { return m_moveup; } set { m_moveup = value; m_direction = ActorDirection.Up; } }
+        public override bool movedown { get { return m_movedown; } set { m_movedown = value; m_direction = ActorDirection.Down; } }
+        public override bool moveleft { get { return m_moveleft; } set { m_moveleft = value; m_direction = ActorDirection.Left; } }
+        public override bool moveright { get { return m_moveright; } set { m_moveright = value; m_direction = ActorDirection.Right; } }
         private int ticks;
         private Random m_rand;
         /// <summary>
@@ -27,11 +26,14 @@ namespace Murasaki.Actors {
             movedown = true;
             movespeed = 2;
             m_rand = map.RandomGenerator;
+            m_map = map;
+            m_collidable = true;
         }
         ~CActorCivilian() {
             m_tileset.Dispose();
         }
         private void RandomDirection() {
+            moveup = movedown = moveleft = moveright = false;
             switch (m_rand.Next(4)) {
                 case 0:
                     moveup = true;
@@ -51,24 +53,7 @@ namespace Murasaki.Actors {
             ticks++;
             if (ticks % 60 == 0)
                 RandomDirection();
-            if (m_direction==Key.UpArrow)
-                Top -= movespeed;
-            if (m_direction==Key.DownArrow)
-                Top += movespeed;
-            if (m_direction==Key.LeftArrow)
-                Left -= movespeed;
-            if (m_direction==Key.RightArrow)
-                Left += movespeed;
-            if ((m_direction==Key.UpArrow) ||
-                (m_direction==Key.DownArrow) ||
-                (m_direction==Key.LeftArrow) ||
-                (m_direction==Key.RightArrow)) {
-                if (m_walkdelay > 10) {
-                    m_walkdelay = 0;
-                    m_walkframe = (m_walkframe + 1) % 3;
-                }
-                m_walkdelay++;
-            }
+            base.Update();
         }
         public override void GotHit(CActor hitby, List<CActor> toRemove, List<CActor> toRemoveWeapon) {
             Console.WriteLine("Hit Civilian");

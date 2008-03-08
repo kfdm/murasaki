@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.Drawing;
 using SdlDotNet.Graphics;
-using SdlDotNet.Input;
 using Murasaki.Map;
 
 namespace Murasaki.Actors {
     class CActorMonster : CActor {
-        public override bool moveup { get { return m_moveup; } set { m_moveup = value; m_direction = Key.UpArrow; } }
-        public override bool movedown { get { return m_movedown; } set { m_movedown = value; m_direction = Key.DownArrow; } }
-        public override bool moveleft { get { return m_moveleft; } set { m_moveleft = value; m_direction = Key.LeftArrow; } }
-        public override bool moveright { get { return m_moveright; } set { m_moveright = value; m_direction = Key.RightArrow; } }
+        public override bool moveup { get { return m_moveup; } set { m_moveup = value; m_direction = ActorDirection.Up; } }
+        public override bool movedown { get { return m_movedown; } set { m_movedown = value; m_direction = ActorDirection.Down; } }
+        public override bool moveleft { get { return m_moveleft; } set { m_moveleft = value; m_direction = ActorDirection.Left; } }
+        public override bool moveright { get { return m_moveright; } set { m_moveright = value; m_direction = ActorDirection.Right; } }
 
-        private CTileMap m_map;
         private CActorPlayer m_player;
         private int ticks = 0;
         private const int tickdelay = 60;
@@ -31,6 +29,7 @@ namespace Murasaki.Actors {
             m_tileset.TransparentColor = Color.FromArgb(255, 0, 255);
             m_player = map.Avatar;
             m_map = map;
+            m_collidable = true;
         }
         ~CActorMonster() {
             m_tileset.Dispose();
@@ -44,38 +43,19 @@ namespace Murasaki.Actors {
         }
 
         public override void Update() {
-                ticks++;
-                if (ticks % tickdelay == 0)
-                    CheckDirection();
-                if (m_moveup)
-                    Top -= movespeed;
-                if (m_movedown)
-                    Top += movespeed;
-                if (m_moveleft)
-                    Left -= movespeed;
-                if (m_moveright)
-                    Left += movespeed;
-                if (m_map.Camera.IntersectsWith(m_rect)) {
-                    if (ticks % tickfiredelay == 0)
-                        Fire();
-                    //Animate
-                    if ((m_direction == Key.UpArrow) ||
-                        (m_direction == Key.DownArrow) ||
-                        (m_direction == Key.LeftArrow) ||
-                        (m_direction == Key.RightArrow)) {
-                        if (m_walkdelay > 10) {
-                            m_walkdelay = 0;
-                            m_walkframe = (m_walkframe + 1) % 3;
-                        }
-                        m_walkdelay++;
-                    }
-                }
+            ticks++;
+            if (ticks % tickdelay == 0)
+                CheckDirection();
+            if (ticks % tickfiredelay == 0)
+                if (m_map.Camera.IntersectsWith(m_rect))
+                    Fire();
+            base.Update();
         }
         /// <summary>
         /// If the player is on the screen, check the direction we want to go
         /// </summary>
         private void CheckDirection() {
-            m_direction = Key.Escape;
+            m_direction = ActorDirection.Stop;
             m_moveright = m_moveleft = m_movedown = m_moveup = false;
             if (m_map.Camera.IntersectsWith(m_rect)) {
                 if (m_player.Top > m_rect.Top)

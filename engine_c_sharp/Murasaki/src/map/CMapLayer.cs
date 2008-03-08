@@ -66,28 +66,28 @@ namespace Murasaki.Map {
 
             //Top
             if ((m_layer[left, top]!=0) && (m_layer[right, top]!=0)) {
-                actor.Top = (top + 1) * m_tilesize;
+                actor.ReverseMovement(ActorDirection.Up);
                 top = actor.Top / m_tilesize;
                 bottom = actor.Bottom / m_tilesize;
                 collide = true;
             }
             //Bottom
             if ((m_layer[left, bottom]!=0) && (m_layer[right, bottom]!=0)) {
-                actor.Bottom = (bottom * m_tilesize) - 1;
+                actor.ReverseMovement(ActorDirection.Down);
                 top = actor.Top / m_tilesize;
                 bottom = actor.Bottom / m_tilesize;
                 collide = true;
             }
             //Left
             if ((m_layer[left, top]!=0) && (m_layer[left, bottom]!=0)) {
-                actor.Left = (left + 1) * m_tilesize;
+                actor.ReverseMovement(ActorDirection.Left);
                 left = actor.Left / m_tilesize;
                 right = actor.Right / m_tilesize;
                 collide = true;
             }
             //Right
             if ((m_layer[right, top] != 0) && (m_layer[right, bottom] != 0)) {
-                actor.Right = (right * m_tilesize) - 1;
+                actor.ReverseMovement(ActorDirection.Right);
                 left = actor.Left / m_tilesize;
                 right = actor.Right / m_tilesize;
                 collide = true;

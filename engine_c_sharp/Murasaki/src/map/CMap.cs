@@ -47,8 +47,8 @@ namespace Murasaki.Map {
             m_actor_weapons = new LinkedList<CActor>();
             m_avatar_weapons = new LinkedList<CActor>();
             m_entities = new LinkedList<CEntity>();
-            
-            LoadAvatar("Data/avatar.png");
+
+            m_avatar = new CActorPlayer(this);
             LoadMap("Data/" + filename);
 
             m_camera = new Rectangle(0, 0, m_camera_width * m_TileSize, m_camera_height * m_TileSize);
@@ -63,9 +63,6 @@ namespace Murasaki.Map {
         #endregion
 
         #region Loader
-        private void LoadAvatar(string filename) {
-            m_avatar = new CActorPlayer(filename);
-        }
         private void LoadMap(string filename) {
             XmlDocument xml;
             XmlNodeList nodes;
@@ -238,7 +235,6 @@ namespace Murasaki.Map {
                 actor.Update();
                 m_MapClip.Collide(actor, toRemoveActors);
             }
-
             //Update Actor Weapons
             foreach (CActor weapon in m_actor_weapons) {
                 weapon.Update();

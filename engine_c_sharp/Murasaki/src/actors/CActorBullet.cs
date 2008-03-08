@@ -1,24 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using SdlDotNet.Graphics;
-using SdlDotNet.Input;
 using Murasaki.Map;
 
 namespace Murasaki.Actors {
     class CActorBullet : CActor{
-        public CActorBullet(CTileMap map, int x, int y, Key direction)
+        public CActorBullet(CTileMap map, int x, int y, ActorDirection direction)
             : this(map, x, y) {
             switch (direction) {
-                case Key.UpArrow:
+                case ActorDirection.Up:
                     moveup = true;
                     break;
-                case Key.DownArrow:
+                case ActorDirection.Down:
                     movedown = true;
                     break;
-                case Key.LeftArrow:
+                case ActorDirection.Left:
                     moveleft = true;
                     break;
-                case Key.RightArrow:
+                case ActorDirection.Right:
                     moveright = true;
                     break;
             }
@@ -36,6 +35,7 @@ namespace Murasaki.Actors {
             m_tileset.TransparentColor = Color.FromArgb(255, 0, 255);
             m_moveup = m_movedown = m_moveleft = m_moveright = false;
             m_movespeed = 5;
+            m_map = map;
         }
         ~CActorBullet() {
             m_tileset.Dispose();
@@ -50,22 +50,6 @@ namespace Murasaki.Actors {
             Camera.Height = m_rect.Height;
 
             dest.Blit(m_tileset, Camera);
-        }
-        public override void Update() {
-            switch (m_direction) {
-                case Key.UpArrow:
-                    m_rect.Y -= m_movespeed;
-                    break;
-                case Key.DownArrow:
-                    m_rect.Y += m_movespeed;
-                    break;
-                case Key.LeftArrow:
-                    m_rect.X -= m_movespeed;
-                    break;
-                case Key.RightArrow:
-                    m_rect.X += m_movespeed;
-                    break;
-            }
         }
     }
 }
