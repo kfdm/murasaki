@@ -6,14 +6,9 @@ using Murasaki.Map;
 
 namespace Murasaki.Actors {
     class CActorMonster : CActor {
-        public override bool moveup { get { return m_moveup; } set { m_moveup = value; m_direction = ActorDirection.Up; } }
-        public override bool movedown { get { return m_movedown; } set { m_movedown = value; m_direction = ActorDirection.Down; } }
-        public override bool moveleft { get { return m_moveleft; } set { m_moveleft = value; m_direction = ActorDirection.Left; } }
-        public override bool moveright { get { return m_moveright; } set { m_moveright = value; m_direction = ActorDirection.Right; } }
-
         private CActorPlayer m_player;
         private int ticks = 0;
-        private const int tickdelay = 60;
+        private const int tickdelay = 30;
         private const int tickfiredelay = 80;
         /// <summary>
         /// Create a new monster
@@ -44,11 +39,11 @@ namespace Murasaki.Actors {
 
         public override void Update() {
             ticks++;
-            if (ticks % tickdelay == 0)
-                CheckDirection();
             if (ticks % tickfiredelay == 0)
                 if (m_map.Camera.IntersectsWith(m_rect))
                     Fire();
+            if (ticks % tickdelay == 0)
+                CheckDirection();    
             base.Update();
         }
         /// <summary>
@@ -66,6 +61,20 @@ namespace Murasaki.Actors {
                     moveright = true;
                 if (m_player.Left < m_rect.Left)
                     moveleft = true;
+
+                int x = m_rect.X - m_map.Avatar.Left;
+                int y = m_rect.Y - m_map.Avatar.Top;
+                if (Math.Abs(x) > Math.Abs(y)) {
+                    if (x > 0)
+                        m_direction = ActorDirection.Left;
+                    else
+                        m_direction = ActorDirection.Right;
+                } else {
+                    if (y > 0)
+                        m_direction = ActorDirection.Up;
+                    else
+                        m_direction = ActorDirection.Down;
+                }
             }
         }
         /// <summary>
