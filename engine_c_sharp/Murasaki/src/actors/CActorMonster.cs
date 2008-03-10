@@ -33,10 +33,26 @@ namespace Murasaki.Actors {
         /// Fire a weapon at the avatar
         /// </summary>
         private void Fire() {
+            if (m_direction == ActorDirection.Stop)
+                FacePlayer();
             CActorBullet tmp = new CActorBullet(m_map, m_rect.X, m_rect.Y, m_direction);
             m_map.EnemyWeapons.AddLast(tmp);
         }
-
+        public void FacePlayer() {
+            int x = m_rect.X - m_map.Avatar.Left;
+            int y = m_rect.Y - m_map.Avatar.Top;
+            if (Math.Abs(x) > Math.Abs(y)) {
+                if (x > 0)
+                    m_direction = ActorDirection.Left;
+                else
+                    m_direction = ActorDirection.Right;
+            } else {
+                if (y > 0)
+                    m_direction = ActorDirection.Up;
+                else
+                    m_direction = ActorDirection.Down;
+            }
+        }
         public override void Update() {
             ticks++;
             if (ticks % tickfiredelay == 0)
@@ -62,19 +78,7 @@ namespace Murasaki.Actors {
                 if (m_player.Left < m_rect.Left)
                     moveleft = true;
 
-                int x = m_rect.X - m_map.Avatar.Left;
-                int y = m_rect.Y - m_map.Avatar.Top;
-                if (Math.Abs(x) > Math.Abs(y)) {
-                    if (x > 0)
-                        m_direction = ActorDirection.Left;
-                    else
-                        m_direction = ActorDirection.Right;
-                } else {
-                    if (y > 0)
-                        m_direction = ActorDirection.Up;
-                    else
-                        m_direction = ActorDirection.Down;
-                }
+                FacePlayer();
             }
         }
         /// <summary>

@@ -51,47 +51,39 @@ namespace Murasaki.Map {
             return true;
         }
         public void Collide(CActor actor,List<CActor> remove) {
-            int top, bottom, left, right;
+            int pointx, pointy;
             bool collide = false;
-            top = actor.Top / m_tilesize;
-            bottom = actor.Bottom / m_tilesize;
-            left = actor.Left / m_tilesize;
-            right = actor.Right / m_tilesize;
-
-            //Out of the world
-            if (top < 0 || top > m_size.Height || left < 0 || left > m_size.Width) {
-                remove.Add(actor);
-                return;
-            }
 
             //Top
-            if ((m_layer[left, top]!=0) && (m_layer[right, top]!=0)) {
+            pointx = (actor.Left + (actor.Width / 2)) / m_tilesize;
+            pointy = (actor.Top / m_tilesize);
+            if (m_layer[pointx, pointy]!=0) {
                 actor.ReverseMovement(ActorDirection.Up);
-                top = actor.Top / m_tilesize;
-                bottom = actor.Bottom / m_tilesize;
                 collide = true;
             }
+
             //Bottom
-            if ((m_layer[left, bottom]!=0) && (m_layer[right, bottom]!=0)) {
+            pointy = (actor.Bottom / m_tilesize);
+            if (m_layer[pointx, pointy] != 0) {
                 actor.ReverseMovement(ActorDirection.Down);
-                top = actor.Top / m_tilesize;
-                bottom = actor.Bottom / m_tilesize;
                 collide = true;
             }
+
             //Left
-            if ((m_layer[left, top]!=0) && (m_layer[left, bottom]!=0)) {
+            pointx = (actor.Left / m_tilesize);
+            pointy = (actor.Top + (actor.Height / 2)) / m_tilesize;
+            if (m_layer[pointx, pointy] != 0) {
                 actor.ReverseMovement(ActorDirection.Left);
-                left = actor.Left / m_tilesize;
-                right = actor.Right / m_tilesize;
                 collide = true;
             }
+
             //Right
-            if ((m_layer[right, top] != 0) && (m_layer[right, bottom] != 0)) {
+            pointx = (actor.Right / m_tilesize);
+            if (m_layer[pointx, pointy] != 0) {
                 actor.ReverseMovement(ActorDirection.Right);
-                left = actor.Left / m_tilesize;
-                right = actor.Right / m_tilesize;
                 collide = true;
             }
+
             if (collide)
                 actor.CollideWall(remove);
         }
