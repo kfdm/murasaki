@@ -40,7 +40,7 @@ namespace Murasaki.Actors {
 		protected ActorDirection m_direction = ActorDirection.Up;
 		protected int m_walkframe = 0, m_walkdelay = 0;
 		protected bool m_collidable;
-		protected CTileMap m_map;
+		protected CMap m_map;
 		#endregion
 
 		public virtual void Draw(Surface dest, Rectangle Camera) {

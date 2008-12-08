@@ -45,17 +45,17 @@ namespace Murasaki.Map {
 				}
 			}
 		}
-		public bool Collide(int x, int y) {
-			if (m_layer[x, y] == 0)
-				return false;
-			return true;
-		}
+		//public bool Collide(int x, int y) {
+		//    if (m_layer[x, y] == 0)
+		//        return false;
+		//    return true;
+		//}
 		public void Collide(CActor actor, List<CActor> remove) {
 			int pointx, pointy;
 			bool collide = false;
 
 			//Top
-			pointx = (actor.Left + (actor.Width / 2)) / m_tilesize;
+			pointx = (actor.Center().X / m_tilesize);
 			pointy = (actor.Top / m_tilesize);
 			if (m_layer[pointx, pointy] != 0) {
 				actor.ReverseMovement(ActorDirection.Up);
@@ -71,7 +71,7 @@ namespace Murasaki.Map {
 
 			//Left
 			pointx = (actor.Left / m_tilesize);
-			pointy = (actor.Top + (actor.Height / 2)) / m_tilesize;
+			pointy = (actor.Center().Y / m_tilesize);
 			if (m_layer[pointx, pointy] != 0) {
 				actor.ReverseMovement(ActorDirection.Left);
 				collide = true;

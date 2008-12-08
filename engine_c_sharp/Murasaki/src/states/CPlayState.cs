@@ -10,7 +10,7 @@ namespace Murasaki.State {
 	class CPlayState : CGameState {
 		const string START_MAP = "test.tmx";
 		private static CPlayState m_PlayState;
-		private static CTileMap m_CurrentMap;
+		private static CMap m_CurrentMap;
 		public override void OnKeyboardDown(CGameEngine game, KeyboardEventArgs e) {
 			switch (e.Key) {
 				case Key.Escape:
@@ -66,9 +66,9 @@ namespace Murasaki.State {
 			return m_PlayState;
 		}
 		public override void Init() {
-			m_CurrentMap = new CTileMap(START_MAP);
+			m_CurrentMap = new CMap(START_MAP);
 		}
-		public void ChangeMap(CTileMap map) {
+		public void ChangeMap(CMap map) {
 			m_CurrentMap = map;
 			GC.Collect();
 			GC.WaitForPendingFinalizers();

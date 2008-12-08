@@ -16,9 +16,9 @@ namespace Murasaki.Actors {
 		/// <param name="map">Reference to the map (to be able to load certain values)</param>
 		/// <param name="x">Starting X Coord in Tile units</param>
 		/// <param name="y">Starting Y Coord in Tile units</param>
-		public CActorMonster(CTileMap map, int x, int y) {
+		public CActorMonster(CMap map, int x, int y) {
 			m_tileset = new Surface("Data/white.png");
-			m_rect = new Rectangle(x * map.TileSize, y * map.TileSize, m_tileset.Width / 3, m_tileset.Height / 4);
+			m_rect = m_rect = map.ConvertToWorldUnits(x, y, m_tileset.Width / 3, m_tileset.Height / 4);
 			MoveSpeed = 1;
 			m_tileset.Transparent = true;
 			m_tileset.TransparentColor = Color.FromArgb(255, 0, 255);

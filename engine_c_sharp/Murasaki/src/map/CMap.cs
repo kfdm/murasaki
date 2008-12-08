@@ -7,12 +7,12 @@ using Murasaki.Actors;
 using Murasaki.Entitys;
 
 namespace Murasaki.Map {
-	public class CTileMap {
+	public class CMap {
 		#region Properties
 		public CActorPlayer Avatar { get { return m_avatar; } }
-		public LinkedList<CActor> Weapons { get { return m_avatar_weapons; } }
-		public LinkedList<CActor> EnemyWeapons { get { return m_actor_weapons; } }
-		public LinkedList<CActor> Actors { get { return m_actors; } }
+		public LinkedList<CEntity> Weapons { get { return m_avatar_weapons; } }
+		public LinkedList<CEntity> EnemyWeapons { get { return m_actor_weapons; } }
+		public LinkedList<CEntity> Actors { get { return m_actors; } }
 		public LinkedList<CEntity> Entities { get { return m_entities; } }
 		public int TileSize { get { return m_TileSize; } }
 		public Random RandomGenerator { get { return m_rand; } }
@@ -34,19 +34,24 @@ namespace Murasaki.Map {
 		private Surface m_surface;
 
 		private CActorPlayer m_avatar;
-		private LinkedList<CActor> m_actors, m_actor_weapons, m_avatar_weapons;
-		private LinkedList<CEntity> m_entities;
+		private LinkedList<CEntity> m_entities,m_actors, m_actor_weapons, m_avatar_weapons;
 		#endregion
 
 		#region Constuctors/Destructors
-		public CTileMap(string filename, int playerx, int playery)
+		/// <summary>
+		/// Create a new map
+		/// </summary>
+		/// <param name="filename"></param>
+		/// <param name="playerx">Player's X position in tile units</param>
+		/// <param name="playery">Player's Y Position in tile units</param>
+		public CMap(string filename, int playerx, int playery)
 			: this(filename) {
 			movePlayer(playerx, playery);
 		}
-		public CTileMap(string filename) {
-			m_actors = new LinkedList<CActor>();
-			m_actor_weapons = new LinkedList<CActor>();
-			m_avatar_weapons = new LinkedList<CActor>();
+		public CMap(string filename) {
+			m_actors = new LinkedList<CEntity>();
+			m_actor_weapons = new LinkedList<CEntity>();
+			m_avatar_weapons = new LinkedList<CEntity>();
 			m_entities = new LinkedList<CEntity>();
 
 			m_avatar = new CActorPlayer(this);
@@ -58,7 +63,7 @@ namespace Murasaki.Map {
 
 			m_rand = new Random(DateTime.Now.Millisecond);
 		}
-		~CTileMap() {
+		~CMap() {
 			m_surface.Dispose();
 		}
 		#endregion
@@ -296,8 +301,9 @@ namespace Murasaki.Map {
 			}
 		}
 		public void Draw(Surface dest, Rectangle size) {
-			m_camera.X = m_avatar.Left + (m_avatar.Width / 2) - (m_camera_halfwidth * m_TileSize);
-			m_camera.Y = m_avatar.Top + (m_avatar.Height / 2) - (m_camera_halfheight * m_TileSize);
+			Point avatar = m_avatar.Center();
+			m_camera.X = avatar.X - (m_camera_halfwidth * m_TileSize);
+			m_camera.Y = avatar.Y - (m_camera_halfheight * m_TileSize);
 
 			m_surface.Fill(Color.Black);
 
@@ -311,6 +317,26 @@ namespace Murasaki.Map {
 		#endregion
 
 		#region Misc
+		public Rectangle ConvertToWorldUnits(int x, int y,int width, int height) {
+			return new Rectangle(x * m_TileSize, y * m_TileSize, width, height);
+		}
+		public Rectangle ConvertToWorldUnits(Rectangle rect) {
+			return this.ConvertToWorldUnits(rect.X, rect.Y, rect.Width, rect.Height);
+		}
+		public Point ConvertToWorldUnits(Point p) {
+			return new Point(p.X * m_TileSize, p.Y * m_TileSize);
+		}
+		public Point ConvertToTileUnits(Point p) {
+			return new Point(p.X / m_TileSize, p.Y / m_TileSize);
+		}
+		public Rectangle ConvertToTileUnits(int x, int y, int width, int height) {
+			return new Rectangle(x / m_TileSize, y / m_TileSize, width, height);
+		}
+		public Rectangle ConvertToTileUnits(Rectangle rect) {
+			return this.ConvertToTileUnits(rect.X, rect.Y, rect.Width, rect.Height);
+		}
+		/// <param name="x">X Pos in Tile Units</param>
+		/// <param name="y">Y Pos in Tile Units</param>
 		private void movePlayer(int x, int y) {
 			if (x > 0 && x < m_MapWidth && y > 0 && y < m_MapHeight) {
 				m_avatar.Left = x * m_TileSize;

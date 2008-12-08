@@ -5,7 +5,7 @@ using Murasaki.Map;
 
 namespace Murasaki.Actors {
 	class CActorBullet : CActor {
-		public CActorBullet(CTileMap map, int x, int y, ActorDirection direction)
+		public CActorBullet(CMap map, int x, int y, ActorDirection direction)
 			: this(map, x, y) {
 			switch (direction) {
 				case ActorDirection.Up:
@@ -28,7 +28,7 @@ namespace Murasaki.Actors {
 		/// <param name="map"></param>
 		/// <param name="x">X Coord in World Units</param>
 		/// <param name="y">Y Coord in World Units</param>
-		public CActorBullet(CTileMap map, int x, int y) {
+		public CActorBullet(CMap map, int x, int y) {
 			m_tileset = new Surface("Data/bullet.png");
 			m_rect = new Rectangle(x, y, m_tileset.Width / 3, m_tileset.Height / 4);
 			m_tileset.Transparent = true;

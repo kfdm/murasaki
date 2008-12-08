@@ -18,11 +18,11 @@ namespace Murasaki.Actors {
 		/// <param name="map"></param>
 		/// <param name="x">X Coord in Tile Units</param>
 		/// <param name="y">Y Coord in Tile Units</param>
-		public CActorCivilian(CTileMap map, int x, int y) {
+		public CActorCivilian(CMap map, int x, int y) {
 			m_tileset = new Surface("data/pink.png");
 			m_tileset.Transparent = true;
 			m_tileset.TransparentColor = Color.FromArgb(255, 0, 255);
-			m_rect = new Rectangle(x * map.TileSize, y * map.TileSize, m_tileset.Width / 3, m_tileset.Height / 4);
+			m_rect = map.ConvertToWorldUnits(x, y, m_tileset.Width / 3, m_tileset.Height / 4);
 			movedown = true;
 			MoveSpeed = 2;
 			m_rand = map.RandomGenerator;

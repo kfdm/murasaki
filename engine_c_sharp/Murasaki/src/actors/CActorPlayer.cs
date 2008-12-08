@@ -10,9 +10,9 @@ namespace Murasaki.Actors {
 		public override bool moveleft { get { return m_moveleft; } set { m_moveleft = value; setDirection(); } }
 		public override bool moveright { get { return m_moveright; } set { m_moveright = value; setDirection(); } }
 
-		public CActorPlayer(CTileMap map) {
+		public CActorPlayer(CMap map) {
 			m_tileset = new Surface("Data/avatar.png");
-			m_rect = new Rectangle(0, 0, m_tileset.Width / 3, m_tileset.Height / 4);
+			m_rect = map.ConvertToWorldUnits(0, 0, m_tileset.Width / 3, m_tileset.Height / 4);
 			m_tileset.Transparent = true;
 			m_tileset.TransparentColor = Color.FromArgb(255, 0, 255);
 

@@ -31,6 +31,10 @@ namespace Murasaki.Entitys {
 		public bool IntersectsWith(Rectangle rect) {
 			return m_rect.IntersectsWith(rect);
 		}
+
+		public Point Center() {
+			return new Point(m_rect.X + m_rect.Width / 2, m_rect.Y + m_rect.Height / 2);
+		}
 		#endregion
 	}
 }

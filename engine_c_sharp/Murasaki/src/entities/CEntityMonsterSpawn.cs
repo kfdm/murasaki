@@ -6,7 +6,7 @@ using Murasaki.Map;
 
 namespace Murasaki.Entitys {
 	class CEntityMonsterSpawn : CEntity {
-		public CEntityMonsterSpawn(CTileMap map, XmlAttributeCollection attributes, XmlNodeList properties) {
+		public CEntityMonsterSpawn(CMap map, XmlAttributeCollection attributes, XmlNodeList properties) {
 			int x, y;
 			Dictionary<string, string> props = new Dictionary<string, string>();
 			foreach (XmlNode node in properties)
