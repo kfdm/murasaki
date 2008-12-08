@@ -218,7 +218,7 @@ namespace Murasaki.Map {
                 weapon.Update();
                 m_MapCollide.Collide(weapon, toRemoveWeapons);
                 foreach(CActor actor in m_actors) {
-                    if (weapon.Rectangle.IntersectsWith(actor.Rectangle)) {
+                    if (weapon.IntersectsWith(actor)) {
                         actor.GotHit(weapon, toRemoveActors,toRemoveWeapons);
                     }
                 }
@@ -239,7 +239,7 @@ namespace Murasaki.Map {
             foreach (CActor weapon in m_actor_weapons) {
                 weapon.Update();
                 m_MapCollide.Collide(weapon,toRemoveWeapons);
-                if(weapon.Rectangle.IntersectsWith(m_avatar.Rectangle)) {
+                if(weapon.IntersectsWith(m_avatar)) {
                     m_avatar.GotHit(weapon,toRemoveActors,toRemoveWeapons);
                 }
             }
@@ -248,7 +248,7 @@ namespace Murasaki.Map {
 
             //Update Entities
             foreach (CEntity entity in m_entities) {
-                if (entity.Rectangle.IntersectsWith(m_avatar.Rectangle))
+                if (entity.IntersectsWith(m_avatar))
                     entity.CollidePlayer();
             }
             foreach (CActor actor in toRemoveActors)

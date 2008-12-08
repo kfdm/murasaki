@@ -40,7 +40,7 @@ namespace Murasaki.State {
                 case Key.Space:
                     int top = m_CurrentMap.Avatar.Top;
                     int left = m_CurrentMap.Avatar.Left;
-                    m_CurrentMap.Weapons.AddLast(new CActorBullet(m_CurrentMap, left, top, m_CurrentMap.Avatar.direction));
+                    m_CurrentMap.Weapons.AddLast(new CActorBullet(m_CurrentMap, left, top, m_CurrentMap.Avatar.Direction));
                     break;
             }
         }

@@ -24,7 +24,7 @@ namespace Murasaki.Actors {
             m_tileset.TransparentColor = Color.FromArgb(255, 0, 255);
             m_rect = new Rectangle(x * map.TileSize, y * map.TileSize, m_tileset.Width / 3, m_tileset.Height / 4);
             movedown = true;
-            movespeed = 2;
+            MoveSpeed = 2;
             m_rand = map.RandomGenerator;
             m_map = map;
             m_collidable = true;

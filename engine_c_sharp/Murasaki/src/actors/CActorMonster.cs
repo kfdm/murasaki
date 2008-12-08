@@ -19,7 +19,7 @@ namespace Murasaki.Actors {
         public CActorMonster(CTileMap map, int x, int y) {
             m_tileset = new Surface("Data/white.png");
             m_rect = new Rectangle(x * map.TileSize, y * map.TileSize, m_tileset.Width / 3, m_tileset.Height / 4);
-            movespeed = 1;
+            MoveSpeed = 1;
             m_tileset.Transparent = true;
             m_tileset.TransparentColor = Color.FromArgb(255, 0, 255);
             m_player = map.Avatar;
