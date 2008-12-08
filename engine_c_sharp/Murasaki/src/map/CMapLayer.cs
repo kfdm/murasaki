@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using SdlDotNet.Graphics;
 using System.Drawing;
 using Murasaki.Actors;
@@ -8,15 +7,13 @@ namespace Murasaki.Map {
 	class CMapLayer {
 		private Surface m_surface;
 		private int[,] m_layer;
-		private Rectangle m_size;
+		/// <summary>
+		/// Size in Tile Units
+		/// </summary>
+		private Size m_size;
 		private CTileSet m_tileset;
 		private int m_tilesize;
 		private bool m_collideonly;
-
-		public Rectangle Rectangle { get { return m_size; } }
-		public int Height { get { return m_size.Height; } }
-		public int Width { get { return m_size.Width; } }
-		public int[,] Layer { get { return m_layer; } }
 
 		~CMapLayer() {
 			if (!m_collideonly)
@@ -25,7 +22,7 @@ namespace Murasaki.Map {
 		public CMapLayer(int[,] layer, int width, int height, int tilesize) {
 			m_collideonly = true;
 			m_layer = layer;
-			m_size = new Rectangle(0, 0, width, height);
+			m_size = new Size(width, height);
 			m_tilesize = tilesize;
 		}
 		public CMapLayer(int[,] layer, int width, int height, CTileSet tileset) {
@@ -33,24 +30,19 @@ namespace Murasaki.Map {
 			m_layer = layer;
 			m_tileset = tileset;
 			m_tilesize = m_tileset.TileSize;
-			m_size = new Rectangle(0, 0, width, height);
+			m_size = new Size(width, height);
 			m_surface = new Surface(width * tileset.TileSize, height * tileset.TileSize);
 			ReDraw();
 		}
-		public void MergeLayer(int[,] layer, int width, int height) {
-			for (int y = 0; y < height; y++) {
-				for (int x = 0; x < width; x++) {
-					if (layer[x, y] != 0)
-						m_layer[x, y] = layer[x, y];
+		public void MergeLayer(CMapLayer layer) {
+			for (int y = 0; y < m_size.Height; y++) {
+				for (int x = 0; x < m_size.Width; x++) {
+					if (layer.m_layer[x, y] != 0)
+						m_layer[x, y] = layer.m_layer[x, y];
 				}
 			}
 		}
-		//public bool Collide(int x, int y) {
-		//    if (m_layer[x, y] == 0)
-		//        return false;
-		//    return true;
-		//}
-		public void Collide(CActor actor, List<CActor> remove) {
+		public bool Collide(CActor actor) {
 			int pointx, pointy;
 			bool collide = false;
 
@@ -84,8 +76,7 @@ namespace Murasaki.Map {
 				collide = true;
 			}
 
-			if (collide)
-				actor.CollideWall(remove);
+			return collide;
 		}
 		public void Draw(Surface dest, Rectangle camera) {
 			if (m_collideonly)

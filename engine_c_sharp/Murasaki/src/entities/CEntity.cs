@@ -1,7 +1,6 @@
 ﻿using System.Drawing;
-using SdlDotNet.Graphics;
-using Murasaki.Actors;
-namespace Murasaki.Entitys {
+
+namespace Murasaki.Entities {
 	/// <summary>
 	/// Base Game Entity
 	/// </summary>

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using SdlDotNet.Graphics;
 using System.Drawing;
 using Murasaki.Actors;
-using Murasaki.Entitys;
+using Murasaki.Entities;
 
 namespace Murasaki.Map {
 	public class CMap {
@@ -34,7 +34,7 @@ namespace Murasaki.Map {
 		private Surface m_surface;
 
 		private CActorPlayer m_avatar;
-		private LinkedList<CEntity> m_entities,m_actors, m_actor_weapons, m_avatar_weapons;
+		private LinkedList<CEntity> m_entities, m_actors, m_actor_weapons, m_avatar_weapons;
 		#endregion
 
 		#region Constuctors/Destructors
@@ -93,7 +93,7 @@ namespace Murasaki.Map {
 			nodes = xml.SelectNodes("map/layer");
 			foreach (XmlNode layer in nodes)
 				LoadMapLayer(layer);
-			m_MapClip.MergeLayer(m_MapCollide.Layer, m_MapWidth, m_MapHeight);
+			m_MapClip.MergeLayer(m_MapCollide);
 
 			//Load Entities
 			nodes = xml.SelectNodes("map/objectgroup");
@@ -193,19 +193,7 @@ namespace Murasaki.Map {
 		}
 		private void LoadMapObjectgroup(XmlNode objectgroup) {
 			foreach (XmlNode entity in objectgroup.ChildNodes) {
-				XmlAttributeCollection attr = entity.Attributes;
-				XmlNodeList properties = entity.FirstChild.ChildNodes;
-				switch (attr["type"].Value) {
-					case "CEntityTransition":
-						m_entities.AddLast(new CEntityTransition(this, attr, properties));
-						break;
-					case "CEntityMonsterSpawn":
-						CEntityMonsterSpawn tmp = new CEntityMonsterSpawn(this, attr, properties);
-						break;
-					default:
-						Console.WriteLine("Unknown Entity Type {0} in LoadMapObjectgroup()", attr["type"].Value);
-						break;
-				}
+				CEntityFactory.Factory(this, entity);
 			}
 		}
 		#endregion
@@ -217,12 +205,14 @@ namespace Murasaki.Map {
 
 			//Update Avatar
 			m_avatar.Update();
-			m_MapClip.Collide(m_avatar, toRemoveActors);
+			//m_MapClip.Collide(m_avatar, toRemoveActors);
+			if (m_MapClip.Collide(m_avatar)) m_avatar.CollideWall(toRemoveActors);
 
 			//Update Avatar Weapons
 			foreach (CActor weapon in m_avatar_weapons) {
 				weapon.Update();
-				m_MapCollide.Collide(weapon, toRemoveWeapons);
+				//m_MapCollide.Collide(weapon, toRemoveWeapons);
+				if (m_MapCollide.Collide(weapon)) weapon.CollideWall(toRemoveWeapons);
 				foreach (CActor actor in m_actors) {
 					if (weapon.IntersectsWith(actor)) {
 						actor.GotHit(weapon, toRemoveActors, toRemoveWeapons);
@@ -239,12 +229,14 @@ namespace Murasaki.Map {
 			//Update Actors
 			foreach (CActor actor in m_actors) {
 				actor.Update();
-				m_MapClip.Collide(actor, toRemoveActors);
+				//m_MapClip.Collide(actor, toRemoveActors);
+				if (m_MapClip.Collide(actor)) actor.CollideWall(toRemoveActors);
 			}
 			//Update Actor Weapons
 			foreach (CActor weapon in m_actor_weapons) {
 				weapon.Update();
-				m_MapCollide.Collide(weapon, toRemoveWeapons);
+				//m_MapCollide.Collide(weapon, toRemoveWeapons);
+				if (m_MapCollide.Collide(weapon)) weapon.CollideWall(toRemoveWeapons);
 				if (weapon.IntersectsWith(m_avatar)) {
 					m_avatar.GotHit(weapon, toRemoveActors, toRemoveWeapons);
 				}
@@ -317,7 +309,7 @@ namespace Murasaki.Map {
 		#endregion
 
 		#region Misc
-		public Rectangle ConvertToWorldUnits(int x, int y,int width, int height) {
+		public Rectangle ConvertToWorldUnits(int x, int y, int width, int height) {
 			return new Rectangle(x * m_TileSize, y * m_TileSize, width, height);
 		}
 		public Rectangle ConvertToWorldUnits(Rectangle rect) {

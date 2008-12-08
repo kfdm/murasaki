@@ -6,7 +6,7 @@ using Murasaki.Map;
 namespace Murasaki.Actors {
 	public enum ActorDirection { Up, Down, Left, Right, Stop }
 
-	public abstract class CActor : Murasaki.Entitys.CEntity {
+	public abstract class CActor : Murasaki.Entities.CEntity {
 		#region Properties
 		/// <summary>
 		/// Set if the actor is moving up

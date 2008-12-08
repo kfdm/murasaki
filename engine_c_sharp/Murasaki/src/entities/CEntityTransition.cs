@@ -4,7 +4,7 @@ using System.Drawing;
 using Murasaki.State;
 using Murasaki.Map;
 
-namespace Murasaki.Entitys {
+namespace Murasaki.Entities {
 	public class CEntityTransition : CEntity {
 		CMap m_map;
 		String newmap;
@@ -31,6 +31,7 @@ namespace Murasaki.Entitys {
 						break;
 				}
 			}
+			map.Entities.AddLast(this);
 		}
 		public override void CollidePlayer() {
 			Console.WriteLine("Triggered World Transition");

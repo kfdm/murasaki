@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Murasaki.Actors;
 using Murasaki.Map;
 
-namespace Murasaki.Entitys {
+namespace Murasaki.Entities {
 	class CEntityMonsterSpawn : CEntity {
 		public CEntityMonsterSpawn(CMap map, XmlAttributeCollection attributes, XmlNodeList properties) {
 			int x, y;
